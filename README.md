@@ -10,14 +10,14 @@ Sentinel Zero is an autonomous AI incident response agent designed to triage sec
 
 ---
 
-## 🌐 Live Deployment & Vercel Hosting
-The project is configured for **Vercel serverless deployment** using `vercel.json`. The frontend (HTML/CSS/JS) is served as static assets, while the FastAPI backend (`app.py`) runs as a serverless function.
+## 🌐 Live Deployment (Vercel + Hugging Face Spaces)
+The project utilizes a dual-hosting architecture for maximum performance and zero timeouts:
+* **Frontend (Vercel):** The premium glassmorphic UI (`frontend/`) is deployed as a pure-static site on Vercel for instant load times and smooth 60fps animations.
+* **Backend (Hugging Face Spaces):** The FastAPI server (`app.py`), Gemini agent, and MCP tools run in a dedicated Docker container on Hugging Face Spaces. This entirely bypasses Vercel's 10-second serverless timeout, allowing long-running forensic investigations and real-time SSE streaming.
 
-🔗 **Live Demo:** https://sentinel-zero.vercel.app/
+🔗 **Live Demo:** [https://sentinel-zero.vercel.app](https://sentinel-zero.vercel.app/)
 
-> **Note:** Vercel’s free tier imposes a 10‑second timeout on Python functions. The UI loads quickly (≈60 fps) and initial data fetches work, but the full autonomous AI investigation may exceed the limit and be cut off. For complete functionality, run the backend locally (see Quick‑Start) and point the UI to `http://localhost:<PORT>`.
-
-The backend itself is not hosted elsewhere; when deployed to Vercel it runs in the same serverless environment. For production‑grade, consider a dedicated FastAPI host (e.g., Azure, GCP, or a VPS).
+> **Note:** The frontend automatically detects if it's running locally or on Vercel. On Vercel, it routes all API calls to the Hugging Face backend. Locally, it routes to your local Python server.
 
 ---
 
@@ -44,12 +44,15 @@ sentinel-zero/
 │   ├── mock_alerts.json       # Splunk security events (with real-world malicious IPs)
 │   ├── mock_filesystem.txt    # Mock fls tool directory listing (with WannaCry SHA256)
 │   └── mock_volatility.txt    # Mock volatility process list output
+├── hf_space/                  # Hugging Face Spaces deployment config
+│   ├── Dockerfile             # Backend container definition
+│   └── README.md              # HF Space YAML configuration
 ├── frontend/                  # Premium 60fps glassmorphic dashboard
 │   ├── index.html             
 │   ├── style.css              
 │   └── app.js                 # Optimized requestAnimationFrame scrubbing logic
 ├── app.py                     # FastAPI web server and SSE event streamer
-├── vercel.json                # Vercel deployment configuration
+├── vercel.json                # Vercel deployment configuration (pure static)
 ├── requirements.txt           # Python library dependencies
 ├── accuracy_report.md         # SANS Findevil accuracy metrics
 └── README.md                  # Setup and execution guide
