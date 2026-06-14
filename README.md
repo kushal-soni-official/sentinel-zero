@@ -1,5 +1,5 @@
 # Sentinel Zero — Autonomous Security Triage & Forensic Agent
-### Splunk Agentic Ops Hackathon ($20,000) &amp; SANS FIND EVIL! Hackathon ($22,000) Submission
+### Made for Splunk Agentic Ops Hackathon &amp; SANS FIND EVIL! Hackathon Submission
 
 [![GitHub Repo](https://img.shields.io/badge/GitHub-sentinel--zero-blue?logo=github)](https://github.com/kushal-soni-official/sentinel-zero)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
