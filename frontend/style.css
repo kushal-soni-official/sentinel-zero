@@ -326,7 +326,47 @@ body {
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid var(--border-color);
     border-radius: 16px;
+    position: relative; /* Ensure absolute children like minimize button are positioned correctly */
     box-shadow: var(--card-shadow);
+    padding-top: 48px; /* space for minimize button */
+}
+
+/* Minimize button styling */
+.btn-minimize {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: var(--text-primary);
+    padding: 4px 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 2;
+    transition: background 0.3s ease;
+}
+.btn-minimize:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* Minimized card style */
+.minimized-card {
+    height: 80px;
+    overflow: hidden;
+    opacity: 0.8;
+    transform: scale(0.95);
+    transition: all 0.3s ease;
+}
+    height: 80px;
+    overflow: hidden;
+    opacity: 0.8;
+    transform: scale(0.95);
+    transition: all 0.3s ease;
+}
+
+/* Ensure content within minimized cards is hidden except maybe header */
+.minimized-card > *:not(.btn-minimize) {
+    display: none;
 }
 
 
@@ -965,3 +1005,28 @@ h3 {
     0% { transform: scale(0) translateY(20px); opacity: 0; }
     100% { transform: scale(1) translateY(0); opacity: 1; }
 }
+
+/* Minimize button styling */
+.btn-minimize {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    cursor: pointer;
+    z-index: 100; /* ensure on top */
+    transition: background 0.3s ease;
+}
+
+.btn-minimize:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+

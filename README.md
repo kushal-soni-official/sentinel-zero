@@ -11,11 +11,13 @@ Sentinel Zero is an autonomous AI incident response agent designed to triage sec
 ---
 
 ## 🌐 Live Deployment & Vercel Hosting
-The entire project (Frontend UI + FastAPI Python Backend) is natively configured to deploy on **Vercel** serverless architecture using the included `vercel.json`. 
+The project is configured for **Vercel serverless deployment** using `vercel.json`. The frontend (HTML/CSS/JS) is served as static assets, while the FastAPI backend (`app.py`) runs as a serverless function.
 
-🔗 **Live Demo:** [https://sentinel-zero.vercel.app/](https://sentinel-zero.vercel.app/)
+🔗 **Live Demo:** https://sentinel-zero.vercel.app/
 
-*Note: Vercel's Free Tier has a strict 10-second timeout for serverless Python functions. While the dashboard loads at buttery 60fps and the initial `/api/alerts` load works perfectly on the live site, the AI Investigation (which loops recursively for 15-30 seconds) may time out. For the full autonomous agent experience, run the project locally!*
+> **Note:** Vercel’s free tier imposes a 10‑second timeout on Python functions. The UI loads quickly (≈60 fps) and initial data fetches work, but the full autonomous AI investigation may exceed the limit and be cut off. For complete functionality, run the backend locally (see Quick‑Start) and point the UI to `http://localhost:<PORT>`.
+
+The backend itself is not hosted elsewhere; when deployed to Vercel it runs in the same serverless environment. For production‑grade, consider a dedicated FastAPI host (e.g., Azure, GCP, or a VPS).
 
 ---
 
