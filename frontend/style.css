@@ -90,6 +90,7 @@ body {
     padding-bottom: 20px;
     border-bottom: 1px solid var(--border-color);
     margin-bottom: 24px;
+    pointer-events: all; /* Allow clicking on header elements */
 }
 
 .logo-area {

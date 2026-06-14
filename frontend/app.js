@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnRunForensics = document.getElementById('btn-run-forensics');
     const statusText = document.getElementById('status-text');
     const statusDot = document.querySelector('.status-dot');
+    const appDock = document.getElementById('app-dock');
     
     // Scrollytelling Sections
     const sections = {
