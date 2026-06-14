@@ -1,4 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // ─── BACKEND URL CONFIG ───────────────────────────────────────────────────
+    // Auto-detects local vs Vercel production.
+    // On localhost:  requests go to the same local FastAPI server (port 8001).
+    // On Vercel:     requests go to Hugging Face Spaces backend (no 10s timeout).
+    //
+    // ► After deploying to HF Spaces, replace the URL below:
+    //   Format:  https://{your-hf-username}-sentinel-zero.hf.space
+    const BACKEND_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? ''
+        : 'https://REPLACE_WITH_YOUR_HF_SPACE_URL';
+    // ─────────────────────────────────────────────────────────────────────────
+
     // State management
     let alerts = [];
     let activeAlertId = null;
@@ -207,14 +219,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchAlerts() {
         try {
-            const response = await fetch('/api/alerts');
+            const response = await fetch(`${BACKEND_URL}/api/alerts`);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
             alerts = await response.json();
             renderAlerts();
         } catch (error) {
             console.error('Error fetching alerts:', error);
             splunkAlertsContainer.innerHTML = `
                 <div class="loading-state text-danger">
-                    <i class="fa-solid fa-triangle-exclamation"></i> Failed to connect to Splunk API
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    Failed to reach backend. If on Vercel, update BACKEND_URL in app.js with your HF Space URL.
                 </div>
             `;
         }
@@ -261,18 +275,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Trigger triage/investigation
     btnTriageAll.addEventListener('click', () => {
-        if (alerts.length === 0) return;
+        if (alerts.length === 0 || btnTriageAll.disabled) return;
         const selectedAlert = alerts.find(a => a.alert_id === activeAlertId) || alerts[0];
         const task = `Acknowledge and triage Splunk alert ${selectedAlert.alert_id} (${selectedAlert.signature}) on host ${selectedAlert.host}. Log execution stages.`;
+        setButtonLoading(btnTriageAll, true, 'Investigating...');
+        scrollToSection('splunk');
         startInvestigation('splunk', task, { splunk_alerts: [selectedAlert] });
     });
 
     btnRunForensics.addEventListener('click', () => {
+        if (btnRunForensics.disabled) return;
         const taskText = forensicTask.value.trim();
+        setButtonLoading(btnRunForensics, true, 'Running Audit...');
+        scrollToSection('sift');
         startInvestigation('sift', taskText, {
             forensic_image: "SEC-PROD-SRV01_disk.raw",
             memory_dump: "SEC-PROD-SRV01_memory.dmp",
             sift_tools: ["fls", "volatility3", "grep"]
+        });
+    });
+
+    // Forensic target row click selection
+    document.querySelectorAll('.target-row').forEach(row => {
+        row.style.cursor = 'pointer';
+        row.addEventListener('click', () => {
+            document.querySelectorAll('.target-row').forEach(r => r.classList.remove('active'));
+            row.classList.add('active');
         });
     });
 
@@ -292,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
             eventSource.close();
         }
 
-        const url = `/api/investigate?mode=${encodeURIComponent(mode)}&task=${encodeURIComponent(task)}`;
+        const url = `${BACKEND_URL}/api/investigate?mode=${encodeURIComponent(mode)}&task=${encodeURIComponent(task)}`;
         eventSource = new EventSource(url);
 
         eventSource.onmessage = (event) => {
@@ -459,6 +487,24 @@ document.addEventListener('DOMContentLoaded', () => {
     function stopStatus() {
         statusText.innerText = 'SYSTEM ACTIVE';
         statusDot.className = 'status-dot';
+        setButtonLoading(btnTriageAll, false, '<i class="fa-solid fa-play"></i> Triage Selected Alert');
+        setButtonLoading(btnRunForensics, false, '<i class="fa-solid fa-wand-magic-sparkles"></i> Run Forensic Audit');
+    }
+
+    // Helper: toggle button loading state
+    function setButtonLoading(btn, isLoading, label) {
+        btn.disabled = isLoading;
+        btn.innerHTML = isLoading
+            ? `<i class="fa-solid fa-spinner fa-spin"></i> ${label}`
+            : label;
+    }
+
+    // Helper: smooth-scroll to a scrollytelling section
+    function scrollToSection(key) {
+        const targets = { intro: 0.05, splunk: 0.33, sift: 0.63, runbook: 0.90 };
+        const pct = targets[key] ?? 0.33;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        window.scrollTo({ top: pct * docHeight, behavior: 'smooth' });
     }
 
     // Copy Markdown Runbook
