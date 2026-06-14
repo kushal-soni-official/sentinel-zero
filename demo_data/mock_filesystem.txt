@@ -1,0 +1,15 @@
+r/r * 11000-128-1:	C:/Windows/System32/cmd.exe (Created: 2026-06-12 09:00:00, Size: 289792, SHA256: 5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef)
+r/r * 12345-128-4:	C:/Windows/System32/svchost.exe (Original System File, Verified Signed, Size: 57344)
+r/r * 14100-128-7:	C:/inetpub/wwwroot/admin/shell.aspx (Created: 2026-06-13 03:58:44, Size: 4412) <-- SUSPICIOUS (Web shell in IIS root)
+r/r * 14200-144-0:	C:/Windows/Temp/ (Directory created: 2026-06-13 04:07:55)
+r/r * 14201-144-1:	C:/Windows/Temp/svchost32.exe (Created: 2026-06-13 04:08:12, Size: 1048576, MD5: e99a18c428cb38d5f260853678922e03, Unsigned) <-- SUSPICIOUS
+r/r * 14202-144-2:	C:/Windows/Temp/update.bat (Created: 2026-06-13 04:10:45, Size: 412) <-- SUSPICIOUS (Batch dropper)
+r/r * 14203-144-3:	C:/Windows/Temp/exfil.ps1 (Created: 2026-06-13 04:12:30, Size: 1823) <-- SUSPICIOUS (Exfil script)
+r/r * 14204-144-4:	C:/Windows/Temp/vss_delete.log (Created: 2026-06-13 04:14:00, Size: 88)
+d/d * 15000-144-4:	C:/Windows/System32/LogFiles/W3SVC1
+r/r * 15001-144-5:	C:/Windows/System32/LogFiles/W3SVC1/u_ex260613.log (Updated: 2026-06-13 04:11:00, Size: 98304)
+r/r * 15100-128-2:	C:/Windows/System32/reg.exe (Created: 2026-06-13 04:10:50, Size: 66048)
+r/r * 15200-128-3:	C:/Windows/System32/vssadmin.exe (Last executed: 2026-06-13 04:12:00)
+r/r * 16299-128-1:	C:/Users/win_admin/Desktop/sensitive_customer_data.xlsx (Accessed: 2026-06-13 04:11:45, Size: 8742912) <-- SUSPICIOUS (Accessed before exfil)
+r/r * 16300-128-2:	C:/Users/win_admin/AppData/Roaming/Microsoft/Windows/Recent/sensitive_customer_data.xlsx.lnk (Created: 2026-06-13 04:11:46)
+-/r * 16400-128-9:	C:/Windows/System32/vss (Volume Shadow Copy folder - DELETED: 2026-06-13 04:12:02) <-- RANSOMWARE PRECURSOR

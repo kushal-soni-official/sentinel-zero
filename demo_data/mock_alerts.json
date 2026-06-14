@@ -1,0 +1,105 @@
+[
+  {
+    "alert_id": "AL-001",
+    "timestamp": "2026-06-13T04:12:00Z",
+    "source": "Splunk Enterprise",
+    "signature": "Unusual Volume Shadow Copy Deletion (vssadmin.exe)",
+    "host": "SEC-PROD-SRV01",
+    "user": "NT AUTHORITY\\SYSTEM",
+    "severity": "CRITICAL",
+    "category": "Ransomware Precursor",
+    "mitre_technique": "T1490 - Inhibit System Recovery",
+    "details": {
+      "process_name": "vssadmin.exe",
+      "process_path": "C:\\Windows\\System32\\vssadmin.exe",
+      "command_line": "vssadmin.exe delete shadows /all /quiet",
+      "parent_process": "cmd.exe",
+      "parent_command_line": "cmd.exe /c \"C:\\Windows\\Temp\\update.bat\"",
+      "process_id": 3924,
+      "parent_pid": 1148
+    }
+  },
+  {
+    "alert_id": "AL-002",
+    "timestamp": "2026-06-13T04:13:30Z",
+    "source": "Splunk Enterprise",
+    "signature": "High Volume Outbound HTTP Transfer",
+    "host": "SEC-PROD-SRV01",
+    "user": "win_admin",
+    "severity": "HIGH",
+    "category": "Data Exfiltration",
+    "mitre_technique": "T1041 - Exfiltration Over C2 Channel",
+    "details": {
+      "destination_ip": "198.51.100.42",
+      "destination_port": 80,
+      "bytes_sent": 849302211,
+      "process_name": "powershell.exe",
+      "process_path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "command_line": "powershell.exe -ExecutionPolicy Bypass -File C:\\Windows\\Temp\\exfil.ps1",
+      "process_id": 2190,
+      "parent_pid": 1824
+    }
+  },
+  {
+    "alert_id": "AL-003",
+    "timestamp": "2026-06-13T04:10:00Z",
+    "source": "Splunk Enterprise",
+    "signature": "Suspicious Executable Dropped in Temp Directory",
+    "host": "SEC-PROD-SRV01",
+    "user": "IIS_IUSRS",
+    "severity": "CRITICAL",
+    "category": "Malware Drop",
+    "mitre_technique": "T1105 - Ingress Tool Transfer",
+    "details": {
+      "file_path": "C:\\Windows\\Temp\\svchost32.exe",
+      "file_size_bytes": 1048576,
+      "md5_hash": "e99a18c428cb38d5f260853678922e03",
+      "sha256_hash": "2fca84d72834b9d03829be038166bcde09a12e03562a1b92015df6efb30f81d1",
+      "signature_status": "UNSIGNED",
+      "parent_process": "w3wp.exe",
+      "parent_pid": 992
+    }
+  },
+  {
+    "alert_id": "AL-004",
+    "timestamp": "2026-06-13T04:09:15Z",
+    "source": "Splunk Enterprise",
+    "signature": "Web Shell Detected — IIS Anomalous Script Execution",
+    "host": "SEC-PROD-SRV01",
+    "user": "IIS_IUSRS",
+    "severity": "CRITICAL",
+    "category": "Web Shell / Initial Access",
+    "mitre_technique": "T1505.003 - Server Software Component: Web Shell",
+    "details": {
+      "process_name": "w3wp.exe",
+      "process_path": "C:\\Windows\\System32\\inetsrv\\w3wp.exe",
+      "command_line": "cmd.exe /c whoami",
+      "child_process": "cmd.exe",
+      "child_pid": 3112,
+      "url_path": "/admin/shell.aspx",
+      "source_ip": "203.0.113.88",
+      "http_method": "POST"
+    }
+  },
+  {
+    "alert_id": "AL-005",
+    "timestamp": "2026-06-13T04:11:20Z",
+    "source": "Splunk Enterprise",
+    "signature": "Registry Persistence Key Written (HKCU Run)",
+    "host": "SEC-PROD-SRV01",
+    "user": "win_admin",
+    "severity": "HIGH",
+    "category": "Persistence Mechanism",
+    "mitre_technique": "T1547.001 - Boot or Logon Autostart Execution: Registry Run Keys",
+    "details": {
+      "registry_key": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+      "registry_value_name": "WindowsUpdate",
+      "registry_value_data": "C:\\Windows\\Temp\\svchost32.exe",
+      "process_name": "reg.exe",
+      "process_path": "C:\\Windows\\System32\\reg.exe",
+      "command_line": "reg.exe add HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run /v WindowsUpdate /t REG_SZ /d C:\\Windows\\Temp\\svchost32.exe /f",
+      "parent_process": "update.bat",
+      "parent_pid": 1148
+    }
+  }
+]

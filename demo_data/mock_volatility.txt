@@ -1,0 +1,20 @@
+Volatility Foundation Volatility Framework 3.0
+Progress:  100.00               PDB scanning finished
+
+PID    PPID   ImageFileName        Offset(V)           Threads  Handles  SessionId  Wow64  CreateTime                ExitTime
+4      0      System               0xe0000100d080      148      -        N/A        False  2026-06-13 00:01:04.000
+120    4      smss.exe             0xe000021a8080      4        -        N/A        False  2026-06-13 00:01:04.000
+320    312    csrss.exe            0xe000025f1080      11       491      0          False  2026-06-13 00:01:10.000
+368    312    wininit.exe          0xe000026a3080      6        217      0          False  2026-06-13 00:01:10.000
+612    368    services.exe         0xe000029b4080      82       476      0          False  2026-06-13 00:01:11.000
+624    368    lsass.exe            0xe000029c2080      12       1091     0          False  2026-06-13 00:01:11.000
+704    612    svchost.exe          0xe00002bf9080      32       948      0          False  2026-06-13 00:01:11.000
+824    612    svchost.exe          0xe00002c8e080      21       505      0          False  2026-06-13 00:01:12.000
+992    612    w3wp.exe             0xe00002d1a080      28       351      0          False  2026-06-13 00:02:15.000   (IIS Worker Process)
+1024   612    spoolsv.exe          0xe000030c2080      14       286      0          False  2026-06-13 00:01:14.000
+1148   704    cmd.exe              0xe000032c2080      1        47       0          False  2026-06-13 04:09:22.000   <-- SUSPICIOUS (Child of svchost, spawned 4h after boot)
+3112   992    cmd.exe              0xe000038d1080      1        52       0          False  2026-06-13 03:59:00.000   <-- SUSPICIOUS (Spawned by IIS w3wp.exe - Web Shell indicator)
+1824   1148   svchost32.exe        0xe000041f5080      3        62       0          False  2026-06-13 04:08:15.000   <-- SUSPICIOUS (Masquerading system process, path: C:\Windows\Temp\svchost32.exe)
+2190   1824   powershell.exe       0xe00004f12080      7        193      0          False  2026-06-13 04:12:33.000   <-- SUSPICIOUS (Spawned by temp-located svchost32, running exfil.ps1)
+3924   1148   vssadmin.exe         0xe00005b23080      1        28       0          False  2026-06-13 04:12:01.000   <-- SUSPICIOUS (VSS deletion)
+4100   2190   conhost.exe          0xe00006112080      3        51       0          False  2026-06-13 04:12:34.000

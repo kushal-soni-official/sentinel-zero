@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sentinel Zero: Autonomous AI security triage agent using MCP and Gemini. Triages Splunk alerts, performs SANS SIFT forensic analysis, self-corrects hallucinations, and generates IR runbooks in seconds.">
+    <meta property="og:title" content="Sentinel Zero — Autonomous Security Triage & Forensics Agent">
+    <meta property="og:description" content="AI-driven autonomous incident response powered by Gemini and Model Context Protocol (MCP).">
+    <title>Sentinel Zero — Autonomous Security Triage & Forensics Agent</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main Style Sheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Canvas for 3D Scroll-Driven Scrollytelling Particle Grid -->
+    <canvas id="bg-canvas"></canvas>
+    
+    <!-- Video Player Placeholder (Hidden until video is supplied) -->
+    <video id="bg-video" src="bg_scroll.mp4" muted playsinline style="display:none;"></video>
+
+    <!-- Scroll Track Spacer (Provides native scroll depth) -->
+    <div class="scroll-spacer"></div>
+
+    <!-- Fixed Viewport Container -->
+    <div class="app-viewport">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <img src="logo.png" alt="Sentinel Zero Logo" class="logo-img">
+                <div class="logo-text">
+                    <h1>SENTINEL ZERO</h1>
+                    <span class="logo-sub">Autonomous AI Incident Responder & Forensic Agent</span>
+                </div>
+            </div>
+            <div class="system-status">
+                <div class="status-indicator">
+                    <span class="status-dot pulse"></span>
+                    <span id="status-text">SYSTEM ACTIVE</span>
+                </div>
+                <div class="system-mode-badge" id="mode-badge">SPLUNK MODE</div>
+            </div>
+        </header>
+
+        <!-- Dynamic Content Sections (Scrollytelling Cards) -->
+        <div class="scrolly-container">
+            
+            <!-- SECTION 1: INTRO / OVERVIEW (Scroll: 0% - 20%) -->
+            <section class="scroll-section visible" id="sec-intro">
+                <div class="intro-card glass-panel">
+                    <div class="badge-accent">AI SECURITY CO-PILOT</div>
+                    <h2>Autonomous Threat Hunting at Machine Speed</h2>
+                    <p>Sentinel Zero triages alerts, extracts evidence timelines, self-corrects hallucinations, and drafts incident containment plans—all in seconds.</p>
+                    <div class="scroll-hint">
+                        <span>SCROLL DOWN TO INITIALIZE INVESTIGATION</span>
+                        <i class="fa-solid fa-chevron-down bounce"></i>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: SPLUNK TRIAGE SYSTEM (Scroll: 20% - 50%) -->
+            <section class="scroll-section" id="sec-splunk">
+                <div class="scrolly-split">
+                    <!-- Left: Alerts List -->
+                    <div class="panel-card glass-panel">
+                        <h3><i class="fa-solid fa-bell"></i> Live Splunk Security Alerts</h3>
+                        <p class="panel-desc">Select an alert payload from the indexed SIEM events to run triage.</p>
+                        
+                        <div class="alerts-list" id="splunk-alerts-container">
+                            <div class="loading-state">
+                                <i class="fa-solid fa-spinner fa-spin"></i> Fetching Splunk indices...
+                            </div>
+                        </div>
+
+                        <div class="action-footer">
+                            <button class="btn btn-primary" id="btn-triage-all"><i class="fa-solid fa-play"></i> Triage Selected Alert</button>
+                        </div>
+                    </div>
+
+                    <!-- Right: Mindstream Console -->
+                    <div class="console-card glass-panel">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-terminal"></i> Sentinel Agent Mindstream</h3>
+                            <span class="console-badge" id="iteration-badge-splunk">Idle</span>
+                        </div>
+                        <div class="console-output" id="console-stream-splunk">
+                            <div class="console-placeholder">
+                                <i class="fa-solid fa-terminal logo-icon-large"></i>
+                                <p>Logs will print here once analysis starts.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: SIFT FORENSIC STUDIO (Scroll: 50% - 80%) -->
+            <section class="scroll-section" id="sec-sift">
+                <div class="scrolly-split">
+                    <!-- Left: Forensic Assets -->
+                    <div class="panel-card glass-panel">
+                        <h3><i class="fa-solid fa-folder-open"></i> Forensic Evidence Targets</h3>
+                        <p class="panel-desc">SIFT targets loaded into memory. Exposes safe read-only MCP commands.</p>
+                        
+                        <div class="forensics-targets">
+                            <div class="target-row active">
+                                <div class="target-icon"><i class="fa-solid fa-compact-disc"></i></div>
+                                <div class="target-info">
+                                    <div class="target-name">SEC-PROD-SRV01_disk.raw</div>
+                                    <div class="target-meta">Size: 45 GB | Format: Raw dd | OS: Windows Server 2022</div>
+                                </div>
+                            </div>
+                            <div class="target-row">
+                                <div class="target-icon"><i class="fa-solid fa-memory"></i></div>
+                                <div class="target-info">
+                                    <div class="target-name">SEC-PROD-SRV01_memory.dmp</div>
+                                    <div class="target-meta">Size: 16 GB | Format: Volatility Dump | Processes Map</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="forensics-art-container">
+                            <img src="forensics_art.png" alt="Forensic Visualization" class="forensics-art-img">
+                        </div>
+
+                        <div class="task-input-group">
+                            <label for="forensic-task">Custom Forensic Objective:</label>
+                            <textarea id="forensic-task" placeholder="Perform forensic investigation.">Audit filesystem timeline for unauthorized executables and check memory dumps for hollowed system processes.</textarea>
+                        </div>
+
+                        <div class="action-footer">
+                            <button class="btn btn-accent" id="btn-run-forensics"><i class="fa-solid fa-wand-magic-sparkles"></i> Run Forensic Audit</button>
+                        </div>
+                    </div>
+
+                    <!-- Right: Mindstream Console -->
+                    <div class="console-card glass-panel">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-terminal"></i> SIFT Agent Mindstream</h3>
+                            <span class="console-badge" id="iteration-badge-sift">Idle</span>
+                        </div>
+                        <div class="console-output" id="console-stream-sift">
+                            <div class="console-placeholder">
+                                <i class="fa-solid fa-terminal logo-icon-large"></i>
+                                <p>Audit processes will stream here live.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: DIAGNOSTIC & CONTAINMENT VAULT (Scroll: 80% - 100%) -->
+            <section class="scroll-section" id="sec-runbook">
+                <div class="scrolly-split">
+                    <!-- Left: Auditor -->
+                    <div class="panel-card glass-panel" style="flex: 0.8;">
+                        <div class="card-header border-yellow">
+                            <h3 class="color-yellow"><i class="fa-solid fa-triangle-exclamation"></i> Self-Correction Inspector</h3>
+                            <span class="status-tag warning" id="confidence-badge">Confidence: --%</span>
+                        </div>
+                        <div class="correction-body" style="height: calc(100% - 50px); display: flex; flex-direction: column; gap: 12px; margin-top: 12px;">
+                            <div class="col-lbl">Detected Hallucinations / Logic Flaws:</div>
+                            <div class="col-content text-danger" id="hallucination-reason" style="flex: 1;">No inconsistencies flagged.</div>
+                            
+                            <div class="col-lbl">Corrected Findings Applied:</div>
+                            <div class="col-content text-success" id="corrected-findings" style="flex: 2; overflow-y: auto;">Verified findings are clean.</div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Generated Runbook -->
+                    <div class="runbook-card glass-panel">
+                        <div class="card-header border-green">
+                            <h3 class="color-green"><i class="fa-solid fa-file-contract"></i> Incident Response Runbook</h3>
+                            <button class="btn btn-small" id="btn-copy-runbook"><i class="fa-regular fa-copy"></i> Copy Markdown</button>
+                        </div>
+                        <div class="runbook-body markdown-body" id="runbook-content">
+                            <div class="loading-state">
+                                <i class="fa-solid fa-shield"></i> Runbook will generate when triage is complete.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+    <!-- Main Application Script -->
+    <script src="app.js"></script>
+</body>
+</html>

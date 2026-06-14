@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "splunk-mcp-server": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@splunk/mcp-server"
+      ],
+      "env": {
+        "SPLUNK_URL": "http://localhost:8089",
+        "SPLUNK_TOKEN": "YOUR_SPLUNK_TOKEN",
+        "SPLUNK_IGNORE_SSL": "true"
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+google-genai>=1.0.0
+fastapi
+uvicorn[standard]
+mcp
+python-dotenv
+httpx
+pydantic

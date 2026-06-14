@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Logs & Execution Artifacts
+logs/
+*.log
+execution_log.json
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Video / Large Binary Files
+video.mp4
+bg_scroll.mp4
+*.raw
+*.dmp
+*.E01
+
+# Node (if using any JS tooling)
+node_modules/
+package-lock.json
+
+# Sensitive
+.env
+*.pem
+*.key
