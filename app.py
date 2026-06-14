@@ -147,8 +147,9 @@ def get_logo():
 def get_art():
     return FileResponse("frontend/forensics_art.png")
 
-# Mount frames directory for scroll scrubbing image sequence
-app.mount("/frames", StaticFiles(directory="frontend/frames"), name="frames")
+import os
+if os.path.exists("frontend/frames"):
+    app.mount("/frames", StaticFiles(directory="frontend/frames"), name="frames")
 
 if __name__ == "__main__":
     import uvicorn
