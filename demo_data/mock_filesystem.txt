@@ -2,7 +2,7 @@ r/r * 11000-128-1:	C:/Windows/System32/cmd.exe (Created: 2026-06-12 09:00:00, Si
 r/r * 12345-128-4:	C:/Windows/System32/svchost.exe (Original System File, Verified Signed, Size: 57344)
 r/r * 14100-128-7:	C:/inetpub/wwwroot/admin/shell.aspx (Created: 2026-06-13 03:58:44, Size: 4412) <-- SUSPICIOUS (Web shell in IIS root)
 r/r * 14200-144-0:	C:/Windows/Temp/ (Directory created: 2026-06-13 04:07:55)
-r/r * 14201-144-1:	C:/Windows/Temp/svchost32.exe (Created: 2026-06-13 04:08:12, Size: 1048576, MD5: e99a18c428cb38d5f260853678922e03, Unsigned) <-- SUSPICIOUS
+r/r * 14201-144-1:	C:/Windows/Temp/svchost32.exe (Created: 2026-06-13 04:08:12, Size: 1048576, SHA256: 24d004a104d4d54034dbcffc2a4b19a11f39008a575aa614ea04703480b1022c, Unsigned) <-- SUSPICIOUS
 r/r * 14202-144-2:	C:/Windows/Temp/update.bat (Created: 2026-06-13 04:10:45, Size: 412) <-- SUSPICIOUS (Batch dropper)
 r/r * 14203-144-3:	C:/Windows/Temp/exfil.ps1 (Created: 2026-06-13 04:12:30, Size: 1823) <-- SUSPICIOUS (Exfil script)
 r/r * 14204-144-4:	C:/Windows/Temp/vss_delete.log (Created: 2026-06-13 04:14:00, Size: 88)

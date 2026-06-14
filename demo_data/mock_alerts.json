@@ -30,7 +30,7 @@
     "category": "Data Exfiltration",
     "mitre_technique": "T1041 - Exfiltration Over C2 Channel",
     "details": {
-      "destination_ip": "198.51.100.42",
+      "destination_ip": "185.220.101.44",
       "destination_port": 80,
       "bytes_sent": 849302211,
       "process_name": "powershell.exe",
@@ -53,8 +53,8 @@
     "details": {
       "file_path": "C:\\Windows\\Temp\\svchost32.exe",
       "file_size_bytes": 1048576,
-      "md5_hash": "e99a18c428cb38d5f260853678922e03",
-      "sha256_hash": "2fca84d72834b9d03829be038166bcde09a12e03562a1b92015df6efb30f81d1",
+      "md5_hash": "84c82835a5d21bbcf75a61706d8ab549",
+      "sha256_hash": "24d004a104d4d54034dbcffc2a4b19a11f39008a575aa614ea04703480b1022c",
       "signature_status": "UNSIGNED",
       "parent_process": "w3wp.exe",
       "parent_pid": 992
@@ -77,7 +77,7 @@
       "child_process": "cmd.exe",
       "child_pid": 3112,
       "url_path": "/admin/shell.aspx",
-      "source_ip": "203.0.113.88",
+      "source_ip": "45.144.225.53",
       "http_method": "POST"
     }
   },

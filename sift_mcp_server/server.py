@@ -29,5 +29,10 @@ def verify_evidence_hash(target_path: str = "mock") -> dict:
     """Compute SHA-256 hash of a forensic target to verify evidence integrity before and after analysis. Use 'mock' for demo data."""
     return tools.verify_evidence_hash(target_path)
 
+@mcp.tool()
+def query_live_threat_intel(indicator: str) -> dict:
+    """Query live public Threat Intelligence APIs for IPs and Hashes."""
+    return tools.query_live_threat_intel(indicator)
+
 if __name__ == "__main__":
     mcp.run()

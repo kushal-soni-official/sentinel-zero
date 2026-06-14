@@ -130,3 +130,48 @@ def verify_evidence_hash(target_path: str) -> dict:
             }
         except Exception as e:
             return {"tool": "sha256", "error": str(e), "status": "failed"}
+
+import urllib.request
+import json as json_lib
+
+def query_live_threat_intel(indicator: str) -> dict:
+    """
+    Query live public Threat Intelligence APIs (AlienVault OTX) for IPs and Hashes.
+    This provides real-world validation without requiring an API key.
+    """
+    try:
+        # Simple heuristic to determine if IP or Hash
+        if "." in indicator and len(indicator) <= 15:
+            # It's likely an IPv4 address
+            url = f"https://otx.alienvault.com/api/v1/indicators/IPv4/{indicator}/general"
+        else:
+            # It's likely a file hash
+            url = f"https://otx.alienvault.com/api/v1/indicators/file/{indicator}/general"
+            
+        req = urllib.request.Request(url, headers={'User-Agent': 'SentinelZero/1.0'})
+        with urllib.request.urlopen(req, timeout=10) as response:
+            data = json_lib.loads(response.read().decode())
+            
+        pulse_info = data.get("pulse_info", {})
+        pulses = pulse_info.get("pulses", [])
+        
+        related_malware = []
+        for pulse in pulses[:3]: # Get top 3 threats
+            related_malware.append(pulse.get("name", "Unknown Threat"))
+            
+        return {
+            "tool": "threat_intel",
+            "indicator": indicator,
+            "status": "success",
+            "source": "AlienVault OTX (Live)",
+            "pulse_count": pulse_info.get("count", 0),
+            "top_threats": related_malware,
+            "raw_summary": str(data)[:500] # Provide some context but limit size
+        }
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+             return {"tool": "threat_intel", "indicator": indicator, "status": "success", "result": "No known threats found (Clean)."}
+        return {"tool": "threat_intel", "indicator": indicator, "status": "failed", "error": f"HTTP {e.code}"}
+    except Exception as e:
+        return {"tool": "threat_intel", "indicator": indicator, "status": "failed", "error": str(e)}
+

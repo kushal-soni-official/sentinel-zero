@@ -16,13 +16,15 @@ class McpClient:
                 self.get_filesystem_timeline,
                 self.analyze_memory_dump,
                 self.search_indicators_of_compromise,
-                self.verify_evidence_hash
+                self.verify_evidence_hash,
+                self.query_live_threat_intel
             ]
         elif self.mode == "splunk":
             return [
                 self.get_splunk_alerts,
                 self.acknowledge_splunk_alert,
-                self.search_indicators_of_compromise
+                self.search_indicators_of_compromise,
+                self.query_live_threat_intel
             ]
         return []
 
@@ -51,6 +53,14 @@ class McpClient:
         Use 'mock' to hash all demo_data files.
         """
         result = sift_tools.verify_evidence_hash(target_path)
+        return json.dumps(result)
+
+    def query_live_threat_intel(self, indicator: str) -> str:
+        """
+        Query live public Threat Intelligence APIs for IPs and Hashes.
+        Provides real-world validation to avoid hallucination.
+        """
+        result = sift_tools.query_live_threat_intel(indicator)
         return json.dumps(result)
 
     # Splunk Tools

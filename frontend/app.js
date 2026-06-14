@@ -86,12 +86,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    let lastFrameIndex = -1;
+    let windowResized = true;
+
     // Resize Canvas
     function resizeCanvas() {
         width = window.innerWidth;
         height = window.innerHeight;
         canvas.width = width;
         canvas.height = height;
+        windowResized = true;
     }
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
@@ -134,10 +138,18 @@ document.addEventListener('DOMContentLoaded', () => {
         let frameDrawn = false;
         if (loadedFramesCount > 0) {
             const frameIndex = Math.min(totalFrames - 1, Math.floor(scrollPercent * totalFrames));
-            const frameImg = frames[frameIndex];
-            if (frameImg && frameImg.complete) {
-                ctx.clearRect(0, 0, width, height);
-                frameDrawn = drawCoverImage(frameImg);
+            if (frameIndex !== lastFrameIndex || windowResized) {
+                const frameImg = frames[frameIndex];
+                if (frameImg && frameImg.complete) {
+                    ctx.clearRect(0, 0, width, height);
+                    frameDrawn = drawCoverImage(frameImg);
+                    if (frameDrawn) {
+                        lastFrameIndex = frameIndex;
+                        windowResized = false;
+                    }
+                }
+            } else {
+                frameDrawn = true; // We already have the correct frame painted
             }
         }
 
