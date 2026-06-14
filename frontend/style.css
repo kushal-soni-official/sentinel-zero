@@ -3,10 +3,10 @@
    ========================================================================== */
 
 :root {
-    --bg-dark: #07090e;
-    --bg-panel: rgba(13, 20, 35, 0.6);
-    --border-color: rgba(255, 255, 255, 0.08);
-    --border-hover: rgba(255, 255, 255, 0.18);
+    --bg-dark: #030407;
+    --bg-panel: rgba(5, 8, 15, 0.88);
+    --border-color: rgba(255, 255, 255, 0.15);
+    --border-hover: rgba(255, 255, 255, 0.25);
     --text-primary: #f1f5f9;
     --text-secondary: #94a3b8;
     --color-primary: #06b6d4;      /* Cyber Cyan */
@@ -322,8 +322,8 @@ body {
 
 .glass-panel {
     background: var(--bg-panel);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     border: 1px solid var(--border-color);
     border-radius: 16px;
     box-shadow: var(--card-shadow);
@@ -382,14 +382,22 @@ body {
 /* --- Cards & Glass Panels --- */
 .panel-card, .console-card, .correction-card, .runbook-card {
     background: var(--bg-panel);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     border: 1px solid var(--border-color);
     border-radius: 16px;
     padding: 24px;
     box-shadow: var(--card-shadow);
     display: flex;
     flex-direction: column;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+    transform-origin: bottom center;
+}
+.intro-card {
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+    transform-origin: bottom center;
 }
 
 .panel-card {
@@ -882,4 +890,78 @@ h3 {
     height: 100%;
     object-fit: cover;
     opacity: 0.85;
+}
+
+/* --- Dock System & Minimize Button --- */
+.btn-minimize {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.btn-minimize:hover {
+    background: rgba(244, 63, 94, 0.15);
+    color: var(--color-accent);
+    border-color: rgba(244, 63, 94, 0.3);
+}
+
+.minimized-card {
+    transform: scale(0) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+.app-dock {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 16px;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.dock-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(16px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    pointer-events: all;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.dock-orb:hover {
+    transform: translateY(-8px) scale(1.1);
+    background: rgba(6, 182, 212, 0.15);
+    border-color: var(--color-primary);
+    box-shadow: 0 8px 25px rgba(6, 182, 212, 0.4);
+    color: #ffffff;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0) translateY(20px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
 }

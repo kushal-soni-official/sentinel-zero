@@ -506,4 +506,35 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         return str.replace(/[&<>"']/g, m => map[m]);
     }
+
+    // --- Dock System Logic ---
+    const appDock = document.getElementById('app-dock');
+    const minimizeButtons = document.querySelectorAll('.btn-minimize');
+
+    minimizeButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const panel = e.target.closest('.glass-panel');
+            if (!panel) return;
+            
+            const title = panel.getAttribute('data-title') || 'Panel';
+            const iconClass = panel.getAttribute('data-icon') || 'fa-solid fa-window-restore';
+            
+            // Minimize panel
+            panel.classList.add('minimized-card');
+            
+            // Create dock orb
+            const orb = document.createElement('div');
+            orb.className = 'dock-orb';
+            orb.title = `Restore: ${title}`;
+            orb.innerHTML = `<i class="${iconClass}"></i>`;
+            
+            // Restore event
+            orb.addEventListener('click', () => {
+                orb.remove();
+                panel.classList.remove('minimized-card');
+            });
+            
+            appDock.appendChild(orb);
+        });
+    });
 });

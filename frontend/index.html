@@ -51,7 +51,8 @@
             
             <!-- SECTION 1: INTRO / OVERVIEW (Scroll: 0% - 20%) -->
             <section class="scroll-section visible" id="sec-intro">
-                <div class="intro-card glass-panel">
+                <div class="intro-card glass-panel" data-title="Overview" data-icon="fa-solid fa-shield-halved">
+                    <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-compress"></i></button>
                     <div class="badge-accent">AI SECURITY CO-PILOT</div>
                     <h2>Autonomous Threat Hunting at Machine Speed</h2>
                     <p>Sentinel Zero triages alerts, extracts evidence timelines, self-corrects hallucinations, and drafts incident containment plans—all in seconds.</p>
@@ -66,7 +67,8 @@
             <section class="scroll-section" id="sec-splunk">
                 <div class="scrolly-split">
                     <!-- Left: Alerts List -->
-                    <div class="panel-card glass-panel">
+                    <div class="panel-card glass-panel" data-title="Live Splunk Alerts" data-icon="fa-solid fa-bell">
+                        <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-compress"></i></button>
                         <h3><i class="fa-solid fa-bell"></i> Live Splunk Security Alerts</h3>
                         <p class="panel-desc">Select an alert payload from the indexed SIEM events to run triage.</p>
                         
@@ -82,7 +84,8 @@
                     </div>
 
                     <!-- Right: Mindstream Console -->
-                    <div class="console-card glass-panel">
+                    <div class="console-card glass-panel" data-title="Agent Mindstream" data-icon="fa-solid fa-terminal">
+                        <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-compress"></i></button>
                         <div class="card-header">
                             <h3><i class="fa-solid fa-terminal"></i> Sentinel Agent Mindstream</h3>
                             <span class="console-badge" id="iteration-badge-splunk">Idle</span>
@@ -101,7 +104,8 @@
             <section class="scroll-section" id="sec-sift">
                 <div class="scrolly-split">
                     <!-- Left: Forensic Assets -->
-                    <div class="panel-card glass-panel">
+                    <div class="panel-card glass-panel" data-title="Forensic Targets" data-icon="fa-solid fa-folder-open">
+                        <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-compress"></i></button>
                         <h3><i class="fa-solid fa-folder-open"></i> Forensic Evidence Targets</h3>
                         <p class="panel-desc">SIFT targets loaded into memory. Exposes safe read-only MCP commands.</p>
                         
@@ -137,7 +141,8 @@
                     </div>
 
                     <!-- Right: Mindstream Console -->
-                    <div class="console-card glass-panel">
+                    <div class="console-card glass-panel" data-title="SIFT Mindstream" data-icon="fa-solid fa-terminal">
+                        <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-compress"></i></button>
                         <div class="card-header">
                             <h3><i class="fa-solid fa-terminal"></i> SIFT Agent Mindstream</h3>
                             <span class="console-badge" id="iteration-badge-sift">Idle</span>
@@ -156,7 +161,8 @@
             <section class="scroll-section" id="sec-runbook">
                 <div class="scrolly-split">
                     <!-- Left: Auditor -->
-                    <div class="panel-card glass-panel" style="flex: 0.8;">
+                    <div class="panel-card glass-panel" style="flex: 0.8;" data-title="Inspector" data-icon="fa-solid fa-triangle-exclamation">
+                        <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-compress"></i></button>
                         <div class="card-header border-yellow">
                             <h3 class="color-yellow"><i class="fa-solid fa-triangle-exclamation"></i> Self-Correction Inspector</h3>
                             <span class="status-tag warning" id="confidence-badge">Confidence: --%</span>
@@ -171,7 +177,8 @@
                     </div>
 
                     <!-- Right: Generated Runbook -->
-                    <div class="runbook-card glass-panel">
+                    <div class="runbook-card glass-panel" data-title="Runbook" data-icon="fa-solid fa-file-contract">
+                        <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-compress"></i></button>
                         <div class="card-header border-green">
                             <h3 class="color-green"><i class="fa-solid fa-file-contract"></i> Incident Response Runbook</h3>
                             <button class="btn btn-small" id="btn-copy-runbook"><i class="fa-regular fa-copy"></i> Copy Markdown</button>
@@ -187,6 +194,10 @@
 
         </div>
     </div>
+    
+    <!-- Dock System -->
+    <div id="app-dock" class="app-dock"></div>
+
     <!-- Main Application Script -->
     <script src="app.js"></script>
 </body>
