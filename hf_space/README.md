@@ -2,7 +2,7 @@
 title: Sentinel Zero
 emoji: 🛡️
 colorFrom: blue
-colorTo: cyan
+colorTo: blue
 sdk: docker
 pinned: true
 ---

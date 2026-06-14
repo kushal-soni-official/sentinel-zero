@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //   Format:  https://{your-hf-username}-sentinel-zero.hf.space
     const BACKEND_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
         ? ''
-        : 'https://REPLACE_WITH_YOUR_HF_SPACE_URL';
+        : 'https://ofc01-sentinel-zero.hf.space';
     // ─────────────────────────────────────────────────────────────────────────
 
     // State management
