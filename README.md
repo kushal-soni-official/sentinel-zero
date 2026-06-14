@@ -1,5 +1,10 @@
 # Sentinel Zero — Autonomous Security Triage & Forensic Agent
-### Splunk Agentic Ops Hackathon ($20,000) & SANS FIND EVIL! Hackathon ($22,000) Submission
+### Splunk Agentic Ops Hackathon ($20,000) &amp; SANS FIND EVIL! Hackathon ($22,000) Submission
+
+[![GitHub Repo](https://img.shields.io/badge/GitHub-sentinel--zero-blue?logo=github)](https://github.com/kushal-soni-official/sentinel-zero)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)](https://python.org)
+[![Powered by Gemini](https://img.shields.io/badge/AI-Gemini%202.5%20Flash-orange?logo=google)](https://ai.google.dev)
 
 Sentinel Zero is an autonomous AI incident response agent designed to triage security alerts and perform forensic investigation. By leveraging the Model Context Protocol (MCP) and Google Gemini, the agent can connect to live Splunk feeds or audit SANS SIFT forensic images, securely run read-only analysis tools, self-correct its own hallucinations, and compile detailed remediation runbooks in seconds.
 
@@ -75,7 +80,7 @@ Sentinel Zero is designed to run with **zero external dependencies**. All forens
 ### Option A — Local Run (Windows)
 ```cmd
 # 1. Clone the repository
-git clone https://github.com/YOUR_GITHUB/sentinel-zero
+git clone https://github.com/kushal-soni-official/sentinel-zero.git
 cd sentinel-zero
 
 # 2. Install Python dependencies

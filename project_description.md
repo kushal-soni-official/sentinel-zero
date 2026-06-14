@@ -77,4 +77,4 @@ Sentinel Zero uses a unified FastAPI backend (`app.py`) with Server-Sent Events 
 
 ---
 
-*Sentinel Zero · SANS Institute FIND EVIL! Hackathon 2026 · MIT License*
+*Sentinel Zero · [github.com/kushal-soni-official/sentinel-zero](https://github.com/kushal-soni-official/sentinel-zero) · SANS Institute FIND EVIL! Hackathon 2026 · MIT License*
