@@ -10,10 +10,20 @@ Sentinel Zero is an autonomous AI incident response agent designed to triage sec
 
 ---
 
+## 🌐 Live Deployment & Vercel Hosting
+The entire project (Frontend UI + FastAPI Python Backend) is natively configured to deploy on **Vercel** serverless architecture using the included `vercel.json`. 
+
+🔗 **Live Demo:** [https://sentinel-zero.vercel.app/](https://sentinel-zero.vercel.app/)
+
+*Note: Vercel's Free Tier has a strict 10-second timeout for serverless Python functions. While the dashboard loads at buttery 60fps and the initial `/api/alerts` load works perfectly on the live site, the AI Investigation (which loops recursively for 15-30 seconds) may time out. For the full autonomous agent experience, run the project locally!*
+
+---
+
 ## 🛠️ Architecture & System Structure
 
 The system uses a unified codebase with distinct mode connectors:
-* **Splunk Mode**: Triage live/mock Splunk security alerts, investigate system states, and compile containment playbooks.
+* **Live Threat Intel (Zero Hallucination)**: The agent connects to the live **AlienVault OTX API** to verify malware hashes (like WannaCry) and IP addresses (like Tor exit nodes) in real-time.
+* **Splunk Mode**: Triage security alerts, investigate system states, and compile containment playbooks.
 * **SIFT Mode**: Connect to a custom SIFT MCP Server, use forensic tools (`fls`, `volatility3`, `grep`), detect compromises, and maintain absolute evidence integrity.
 
 ```text
@@ -25,18 +35,19 @@ sentinel-zero/
 │   └── mcp_client.py          # Local MCP client tool-binding dispatcher
 ├── sift_mcp_server/
 │   ├── server.py              # SIFT FastMCP server (exposing forensic commands)
-│   └── tools.py               # Forensics tools wrappers (with mock data fallbacks)
+│   └── tools.py               # Forensics tools wrappers (including live AlienVault OTX)
 ├── splunk_config/
 │   └── mcp_client_config.json # Config to connect client to Splunk's official server
 ├── demo_data/                 # High-fidelity mock alerts & forensics dumps
-│   ├── mock_alerts.json       # Simulated Splunk security events
-│   ├── mock_filesystem.txt    # Mock fls tool directory listing
+│   ├── mock_alerts.json       # Splunk security events (with real-world malicious IPs)
+│   ├── mock_filesystem.txt    # Mock fls tool directory listing (with WannaCry SHA256)
 │   └── mock_volatility.txt    # Mock volatility process list output
-├── frontend/                  # Premium glassmorphic dashboard
+├── frontend/                  # Premium 60fps glassmorphic dashboard
 │   ├── index.html             
 │   ├── style.css              
-│   └── app.js                 
+│   └── app.js                 # Optimized requestAnimationFrame scrubbing logic
 ├── app.py                     # FastAPI web server and SSE event streamer
+├── vercel.json                # Vercel deployment configuration
 ├── requirements.txt           # Python library dependencies
 ├── accuracy_report.md         # SANS Findevil accuracy metrics
 └── README.md                  # Setup and execution guide
