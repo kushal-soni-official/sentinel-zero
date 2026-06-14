@@ -100,15 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    // Initialize Particles in 3D Space (Fallback)
-    for (let i = 0; i < numParticles; i++) {
-        particles.push({
-            x: (Math.random() - 0.5) * 2000,
-            y: (Math.random() - 0.5) * 2000,
-            z: Math.random() * 2000,
-            color: Math.random() > 0.5 ? 'var(--color-primary)' : 'var(--color-accent)'
-        });
-    }
+    // Particle system removed to prevent visual clutter and lag
 
     // Draw frame as background-size: cover
     function drawCoverImage(img) {
@@ -153,90 +145,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Fallback to particle grid if frames aren't loaded yet or fail
-        if (!frameDrawn) {
-            ctx.fillStyle = 'rgba(7, 9, 14, 0.2)'; // Faint trail
+        // Fallback removed. Just wait for frames to load.
+        if (!frameDrawn && totalFrames > 0 && loadedFramesCount < 10) {
+            ctx.fillStyle = '#07090e';
             ctx.fillRect(0, 0, width, height);
-
-            // Calculate virtual camera movement based on scroll percent
-            const cameraZ = scrollPercent * 1800;
-            const centerX = width / 2;
-            const centerY = height / 2;
-
-            // Draw 3D Grid floor lines
-            ctx.strokeStyle = 'rgba(6, 182, 212, 0.05)';
-            ctx.lineWidth = 1;
-            const numGridLines = 15;
-            for (let i = -numGridLines; i <= numGridLines; i++) {
-                // Horizontal lines moving closer on scroll
-                const gz = (cameraZ % 150) + 100;
-                const scale = perspective / gz;
-                ctx.beginPath();
-                ctx.moveTo(0, centerY + (i * 200) * scale);
-                ctx.lineTo(width, centerY + (i * 200) * scale);
-                ctx.stroke();
-            }
-
-            // Draw spinning holographic globe when scroll is near top (0% - 25%)
-            if (scrollPercent < 0.25) {
-                const globeOpacity = (0.25 - scrollPercent) / 0.25;
-                ctx.strokeStyle = `rgba(6, 182, 212, ${0.1 * globeOpacity})`;
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, 150 * (1 - scrollPercent * 0.8), 0, Math.PI * 2);
-                ctx.stroke();
-                
-                // Draw rotating orbital rings
-                const angle = Date.now() * 0.001;
-                ctx.strokeStyle = `rgba(244, 63, 94, ${0.15 * globeOpacity})`;
-                ctx.beginPath();
-                ctx.ellipse(centerX, centerY, 200 * (1 - scrollPercent), 60 * (1 - scrollPercent), angle, 0, Math.PI * 2);
-                ctx.stroke();
-            }
-
-            // Project and Draw 3D Particles
-            particles.forEach(p => {
-                // Wrap particles around to simulate infinite corridor
-                let relativeZ = p.z - cameraZ;
-                if (relativeZ < 0) relativeZ += 2000;
-                if (relativeZ > 2000) relativeZ -= 2000;
-
-                const scale = perspective / (relativeZ + 1);
-                const x2d = centerX + p.x * scale;
-                const y2d = centerY + p.y * scale;
-
-                // Draw particle if inside viewport
-                if (x2d >= 0 && x2d <= width && y2d >= 0 && y2d <= height) {
-                    // Size expands as camera gets closer
-                    const size = Math.max(1, scale * 3);
-                    const alpha = Math.min(1, (2000 - relativeZ) / 500); // Fade out in distance
-
-                    ctx.fillStyle = p.color === 'var(--color-primary)' ? `rgba(6, 182, 212, ${alpha * 0.4})` : `rgba(244, 63, 94, ${alpha * 0.4})`;
-                    ctx.beginPath();
-                    ctx.arc(x2d, y2d, size, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    // Draw faint connections to nearby particles to look like network nodes
-                    particles.forEach(other => {
-                        let otherZ = other.z - cameraZ;
-                        if (otherZ < 0) otherZ += 2000;
-                        if (otherZ > 2000) otherZ -= 2000;
-
-                        const dist = Math.hypot(p.x - other.x, p.y - other.y, relativeZ - otherZ);
-                        if (dist < 180) {
-                            const ox2d = centerX + other.x * (perspective / (otherZ + 1));
-                            const oy2d = centerY + other.y * (perspective / (otherZ + 1));
-                            
-                            ctx.strokeStyle = `rgba(255, 255, 255, ${0.03 * alpha})`;
-                            ctx.beginPath();
-                            ctx.moveTo(x2d, y2d);
-                            ctx.lineTo(ox2d, oy2d);
-                            ctx.stroke();
-                        }
-                    });
-                }
-            });
+            ctx.fillStyle = '#06b6d4';
+            ctx.font = '20px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText('INITIALIZING SYSTEM...', width / 2, height / 2);
         }
-
         requestAnimationFrame(drawCanvas);
     }
     requestAnimationFrame(drawCanvas);
@@ -415,6 +332,23 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         eventSource.onerror = () => {
+            if (statusText.innerText !== 'INVESTIGATION COMPLETE') {
+                const timeoutMsg = "⚠️ Vercel 10s Serverless Execution Limit Reached. Connection severed by host. To view the full AI autonomous resolution without limits, please run Sentinel Zero locally.";
+                
+                appendLogLine(mode, {
+                    timestamp: new Date().toISOString(),
+                    level: 'TIMEOUT',
+                    message: timeoutMsg
+                });
+                
+                const runbookContent = document.getElementById('runbook-content');
+                if (runbookContent.innerHTML.includes('loading-state')) {
+                    runbookContent.innerHTML = `<div class="loading-state text-danger"><i class="fa-solid fa-triangle-exclamation"></i> ${timeoutMsg}</div>`;
+                }
+                
+                statusText.innerText = 'CONNECTION SEVERED (VERCEL TIMEOUT)';
+                statusDot.className = 'status-dot';
+            }
             eventSource.close();
         };
     }

@@ -180,7 +180,7 @@ body {
 
 /* --- Scrollytelling Viewport & Layout --- */
 .scroll-spacer {
-    height: 400vh;
+    height: 1000vh;
     width: 100%;
     position: absolute;
     top: 0;
