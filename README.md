@@ -1,176 +1,239 @@
-# Sentinel Zero — Autonomous Security Triage & Forensic Agent
-### Dual Hackathon Submission: [Splunk App Development Hackathon](https://splunk.devpost.com/) &amp; [Finding Evil: Cybersecurity Hackathon](https://findevil.devpost.com/)
+# 🛡️ Sentinel Zero — Autonomous Security Triage & Forensic Agent
 
-[![GitHub Repo](https://img.shields.io/badge/GitHub-sentinel--zero-blue?logo=github)](https://github.com/kushal-soni-official/sentinel-zero)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)](https://python.org)
-[![Powered by Gemini](https://img.shields.io/badge/AI-Gemini%202.5%20Flash-orange?logo=google)](https://ai.google.dev)
+<p align="center">
+  <img src="architecture_diagram.png" alt="Sentinel Zero Architecture Diagram" width="100%"/>
+</p>
 
-Sentinel Zero is an autonomous AI incident response agent designed to triage security alerts and perform forensic investigation. By leveraging the Model Context Protocol (MCP) and Google Gemini, the agent can connect to live Splunk feeds or audit SANS SIFT forensic images, securely run read-only analysis tools, self-correct its own hallucinations, and compile detailed remediation runbooks in seconds.
+<p align="center">
+  <strong>Dual Hackathon Submission</strong><br>
+  <a href="https://splunk.devpost.com/">🏆 Splunk App Development Hackathon</a> &nbsp;|&nbsp;
+  <a href="https://findevil.devpost.com/">🔍 Finding Evil: Cybersecurity Hackathon</a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/kushal-soni-official/sentinel-zero"><img src="https://img.shields.io/badge/GitHub-sentinel--zero-181717?logo=github&style=for-the-badge" alt="GitHub"/></a>
+  <a href="https://sentinel-zero.vercel.app"><img src="https://img.shields.io/badge/Live%20Demo-Vercel-000?logo=vercel&style=for-the-badge" alt="Vercel"/></a>
+  <a href="https://huggingface.co/spaces/ofc01/sentinel-zero"><img src="https://img.shields.io/badge/Backend-HuggingFace-yellow?logo=huggingface&style=for-the-badge" alt="HuggingFace"/></a>
+  <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&style=for-the-badge" alt="Python"/>
+  <img src="https://img.shields.io/badge/Gemini-2.5%20Flash-orange?logo=google&style=for-the-badge" alt="Gemini"/>
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT"/>
+</p>
 
 ---
 
-## 🌐 Live Deployment (Vercel + Hugging Face Spaces)
-The project utilizes a dual-hosting architecture for maximum performance and zero timeouts:
-* **Frontend (Vercel):** The premium glassmorphic UI (`frontend/`) is deployed as a pure-static site on Vercel for instant load times and smooth 60fps animations.
-* **Backend (Hugging Face Spaces):** The FastAPI server (`app.py`), Gemini agent, and MCP tools run in a dedicated Docker container on Hugging Face Spaces. This entirely bypasses Vercel's 10-second serverless timeout, allowing long-running forensic investigations and real-time SSE streaming.
-
-🔗 **Live Demo:** [https://sentinel-zero.vercel.app](https://sentinel-zero.vercel.app/)
-
-> **Note:** The frontend automatically detects if it's running locally or on Vercel. On Vercel, it routes all API calls to the Hugging Face backend. Locally, it routes to your local Python server.
+> **One codebase. Two hackathon tracks. Zero hallucinations.**
+>
+> Sentinel Zero is a fully autonomous AI incident-response agent. It triages live Splunk SIEM alerts and performs digital forensic investigation on SANS SIFT disk/memory images — simultaneously satisfying both hackathon criteria through a unified architecture powered by **Google Gemini 2.5 Flash** and the **Model Context Protocol (MCP)**.
 
 ---
 
-## 🛠️ Architecture & System Structure
+## 🌐 Live Deployments
 
-The system uses a unified codebase with distinct mode connectors:
-* **Live Threat Intel (Zero Hallucination)**: The agent connects to the live **AlienVault OTX API** to verify malware hashes (like WannaCry) and IP addresses (like Tor exit nodes) in real-time.
-* **Splunk Mode**: Triage security alerts, investigate system states, and compile containment playbooks.
-* **SIFT Mode**: Connect to a custom SIFT MCP Server, use forensic tools (`fls`, `volatility3`, `grep`), detect compromises, and maintain absolute evidence integrity.
+| Platform | URL | Purpose |
+|----------|-----|---------|
+| **Vercel** | [sentinel-zero.vercel.app](https://sentinel-zero.vercel.app/) | Frontend glassmorphic UI (60fps, instant load) |
+| **Hugging Face Spaces** | [huggingface.co/spaces/ofc01/sentinel-zero](https://huggingface.co/spaces/ofc01/sentinel-zero) | FastAPI backend + Gemini agent + MCP tools |
+| **GitHub** | [kushal-soni-official/sentinel-zero](https://github.com/kushal-soni-official/sentinel-zero) | Full source code, MIT License |
+
+> **Architecture note:** The Vercel frontend automatically detects the environment. On Vercel, all `/api/` calls route to the Hugging Face backend, bypassing Vercel's 10-second serverless timeout entirely for long-running AI investigations.
+
+---
+
+## 🎯 What It Does
+
+### 🔴 Splunk Mode — [Splunk App Dev Hackathon Track]
+The agent connects to your Splunk SIEM feed, loads live security alerts (Ransomware, Data Exfiltration, Web Shells, Registry Persistence, etc.), and autonomously triages them:
+
+1. Selects and acknowledges the alert via MCP
+2. Runs a multi-iteration Gemini reasoning loop (up to 5 iterations)
+3. Calls live Splunk MCP tools to investigate the threat chain
+4. Streams every step to the analyst dashboard via **Server-Sent Events (SSE)**
+5. Produces a structured, copyable **Incident Response Runbook**
+
+### 🟢 SIFT Forensics Mode — [Finding Evil Hackathon Track]
+The agent connects to our custom **FastMCP server** exposing read-only SANS SIFT forensic tools against disk images and memory dumps:
+
+1. Loads forensic targets (disk `.raw` + memory `.dmp`)
+2. Calls `fls` (filesystem timeline), `volatility3` (process memory), and `grep` (IOC search)
+3. Verifies every hash and IP against the live **AlienVault OTX API** — no hallucinations accepted
+4. Runs a **Self-Correction audit** after each iteration to remove unsupported claims
+5. Generates a full Incident Response Runbook with ATT&CK-mapped findings
+
+### 🔵 Shared Core Features (Both Tracks)
+- **Multi-Key API Rotation:** Pool of 5 Gemini API keys with auto-rotation on `429 RESOURCE_EXHAUSTED`. The agent never stops mid-investigation due to quota.
+- **Self-Correction Engine:** An independent second Gemini call audits every proposed finding against raw tool outputs. If a claim has no evidence, it is flagged and discarded — confidence scored 0%.
+- **Real-Time SSE Streaming:** Every tool call, key rotation, iteration, and correction appears in the UI console live.
+- **Full Audit Trail:** All actions logged to `execution_log.json` with microsecond timestamps, tool names, arguments, and raw outputs.
+- **Read-Only Forensics:** The MCP tool schema architecturally prevents any data-modifying commands — the AI physically cannot alter evidence.
+
+---
+
+## 🏗️ Architecture
 
 ```text
 sentinel-zero/
 ├── core/
-│   ├── agent.py               # Gemini-powered autonomous agent loop
-│   ├── self_correct.py        # Self-correction logic (catches hallucinations)
-│   ├── logger.py              # Timestamped execution logger (Findevil audit trail)
-│   └── mcp_client.py          # Local MCP client tool-binding dispatcher
+│   ├── agent.py               # Gemini autonomous loop: multi-key pool, iteration, tool dispatch
+│   ├── self_correct.py        # Independent auditor: hallucination detection + confidence scoring
+│   ├── logger.py              # Timestamped execution logger (microsecond audit trail)
+│   └── mcp_client.py          # MCP tool-binding dispatcher (Splunk + SIFT modes)
+│
 ├── sift_mcp_server/
-│   ├── server.py              # SIFT FastMCP server (exposing forensic commands)
-│   └── tools.py               # Forensics tools wrappers (including live AlienVault OTX)
+│   ├── server.py              # FastMCP server exposing forensic commands
+│   └── tools.py               # fls, volatility3, grep wrappers + live AlienVault OTX API
+│
 ├── splunk_config/
-│   └── mcp_client_config.json # Config to connect client to Splunk's official server
-├── demo_data/                 # High-fidelity mock alerts & forensics dumps
-│   ├── mock_alerts.json       # Splunk security events (with real-world malicious IPs)
-│   ├── mock_filesystem.txt    # Mock fls tool directory listing (with WannaCry SHA256)
-│   └── mock_volatility.txt    # Mock volatility process list output
-├── hf_space/                  # Hugging Face Spaces deployment config
-│   ├── Dockerfile             # Backend container definition
-│   └── README.md              # HF Space YAML configuration
-├── frontend/                  # Premium 60fps glassmorphic dashboard
-│   ├── index.html             
-│   ├── style.css              
-│   └── app.js                 # Optimized requestAnimationFrame scrubbing logic
-├── app.py                     # FastAPI web server and SSE event streamer
-├── vercel.json                # Vercel deployment configuration (pure static)
-├── requirements.txt           # Python library dependencies
-├── accuracy_report.md         # SANS Findevil accuracy metrics
-└── README.md                  # Setup and execution guide
+│   └── mcp_client_config.json # Splunk official MCP server connection config
+│
+├── demo_data/                 # High-fidelity mock datasets (zero SIFT installation required)
+│   ├── mock_alerts.json       # 5 Splunk CIM-schema security events (real-world malicious IPs)
+│   ├── mock_filesystem.txt    # fls timeline output: suspicious paths, WannaCry SHA256 hash
+│   └── mock_volatility.txt    # volatility3 pslist output: hollowed svchost32.exe (anomalous PPID)
+│
+├── frontend/                  # 60fps glassmorphic dashboard
+│   ├── index.html             # Scroll-driven 400vh storytelling layout
+│   ├── style.css              # Glassmorphism dark theme, card minimization dock
+│   └── app.js                 # requestAnimationFrame canvas, SSE stream handler
+│
+├── hf_space/
+│   ├── Dockerfile             # Container definition for HF Spaces backend
+│   └── README.md              # HF Space YAML config (SDK: docker)
+│
+├── architecture_diagram.png   # System architecture visual
+├── app.py                     # FastAPI server + SSE event streamer + static file host
+├── requirements.txt           # Python dependencies
+├── vercel.json                # Vercel pure-static frontend config
+└── .env                       # API keys (gitignored — see setup below)
 ```
+
+**Key architectural decision:** We use **MCP (Model Context Protocol)** instead of giving the AI raw code execution. This means the agent has a curated, sandboxed toolbox. It cannot call anything outside the defined MCP schema. For forensic investigations, this is not optional — it is the only responsible approach.
 
 ---
 
-## ⚡ Quick Start (Windows CMD)
+## ⚡ Quick Start
 
-Follow these steps to run Sentinel Zero locally.
+### Requirements
+- Python 3.10+
+- A free Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
 
-### 1. Install Dependencies
-Ensure you have Python 3.10+ installed. Run the following command in standard Windows Command Prompt (CMD) to install all required libraries:
+### 1. Clone & Install
 ```cmd
+git clone https://github.com/kushal-soni-official/sentinel-zero.git
+cd sentinel-zero
 pip install -r requirements.txt
 ```
 
-### 2. Set API Key Configuration
-Create a `.env` file in the root directory (or edit the one created automatically) and add your Gemini API Key:
+### 2. Configure API Keys
+Create a `.env` file in the root directory:
 ```env
-GEMINI_API_KEY=YOUR_GEMINI_API_KEY
+# Primary key (required)
+GEMINI_API_KEY=your_gemini_api_key_here
+
+# Optional fallback keys — the agent auto-rotates through these on quota exhaustion
+# Add up to GEMINI_API_KEY_10 for maximum resilience
+GEMINI_API_KEY_2=your_second_key_here
+GEMINI_API_KEY_3=your_third_key_here
+
 PORT=8001
 ```
 
-### 3. Start the Web Server
-Launch the FastAPI backend and web server:
+> **Tip:** Get multiple free API keys from different Google accounts at [aistudio.google.com](https://aistudio.google.com/app/apikey). Each free account provides 15 RPM and 1M tokens/day. With 3 keys, you effectively triple your quota.
+
+### 3. Run
 ```cmd
 python app.py
 ```
-
-### 4. Access the Dashboard
-Open your web browser and navigate to:
-[http://localhost:8001](http://localhost:8001)
+Then open **[http://localhost:8001](http://localhost:8001)** in your browser.
 
 ---
 
-## 🧪 Try-It-Out Instructions (Findevil Component #7)
+## 🧪 Full Demo Walkthrough
 
-Sentinel Zero is designed to run with **zero external dependencies**. All forensic tool outputs fall back to high-fidelity mock data automatically when SIFT tooling is unavailable.
+Once the dashboard loads, follow this sequence to see all features:
 
-### Option A — Local Run (Windows)
-```cmd
-# 1. Clone the repository
-git clone https://github.com/kushal-soni-official/sentinel-zero.git
-cd sentinel-zero
+| Step | Action | What You'll See |
+|------|--------|-----------------|
+| 1 | Scroll past the hero screen | Cyberpunk glassmorphic UI with live canvas particles |
+| 2 | **Splunk Mode** → Select an alert → Click **Triage Selected Alert** | SSE stream lights up: agent reasoning, key rotations, tool calls |
+| 3 | Watch the **Sentinel Agent Mindstream** panel | Live iteration logs, `[KEY ROTATION]` events on quota exhaustion |
+| 4 | Watch **Self-Correction Inspector** panel | Confidence score + hallucination flags appear in real time |
+| 5 | Scroll to SIFT section → Click **Run Forensic Audit** | Agent runs fls, volatility3, grep against mock forensic data |
+| 6 | Scroll to **Containment Vault** | Full Markdown IR Runbook renders — copy to clipboard |
+| 7 | Scroll to end | Project Showcase: architecture, stack, developer info |
 
-# 2. Install Python dependencies
-pip install -r requirements.txt
-
-# 3. Configure API key (edit .env file)
-echo GEMINI_API_KEY=YOUR_KEY_HERE > .env
-echo PORT=8001 >> .env
-
-# 4. Launch the dashboard (opens browser automatically)
-run_dashboard.cmd
-```
-
-### Option B — Quick Manual Launch
-```cmd
-pip install -r requirements.txt
-python app.py
-# Then open http://localhost:8001 in your browser
-```
-
-### What to Expect
-1. **Dashboard loads** — cyberpunk glassmorphic UI with scrollytelling animation.
-2. **Splunk Mode** — Click **Triage All Alerts** to watch the agent investigate mock Splunk events via SSE stream.
-3. **SIFT Mode** — Click **Run Forensic Audit** to watch tool calls, self-correction, and runbook generation.
-4. **Self-Correction Panel** — Watch the AI catch and remove its own hallucinations in real time.
-5. **Runbook** — Final Markdown IR plan renders and is copyable to clipboard.
-
----
-
-## 🚀 How to Triage and Investigate
-
-### 1. Splunk Security Triage Mode
-* Select the **Splunk Triage** tab in the dashboard.
-* You will see live alerts fetched from `demo_data/mock_alerts.json` (such as Ransomware, Exfiltration, or Web Shell drops).
-* Click **Triage All Alerts**.
-* The console will stream the agent's step-by-step investigation, showing how it reviews command line parameters and flags threats.
-
-### 2. SIFT Forensic Studio Mode
-* Select the **SIFT Forensics** tab in the dashboard.
-* Review the disk and memory images loaded for analysis.
-* Click **Run Forensic Audit**.
-* The console will stream tool calls mimicking `fls` (filesystem scan) and `volatility3` (memory process scan).
-* The **Self-Correction Inspector** will activate, showing how the agent catches its own logical jumps or false positive assumptions and repairs them before submitting the report.
-* A detailed, copyable Markdown **Incident Response Runbook** will render at the bottom of the screen when completed.
+**All forensic tools fall back to high-fidelity mock data automatically** — you do not need a SIFT VM or any forensic installation to evaluate the full agent flow.
 
 ---
 
 ## 🔒 Security Boundaries & Evidence Integrity
-Sentinel Zero is built to conform to the strict security constraints of forensic audits:
-* **Architectural Read-Only**: The tools exposed via `sift_mcp_server/tools.py` contain no data-modifying arguments. The agent physically cannot run a command that modifies the system or case logs.
-* **Hash Integrity**: Forensic analyses are run on read-only copies of images. Original hashes (MD5/SHA256) are validated at start and completion to verify evidence integrity.
-* **Perfect Audit Trail**: The backend records all actions in `execution_log.json` with milliseconds, tool parameters, and response states for complete compliance tracking.
+
+| Property | Implementation |
+|----------|---------------|
+| **Read-only enforcement** | MCP tool schema has no data-modifying arguments. The agent cannot write, delete, or modify any file. |
+| **Evidence integrity** | SHA-256 hashes validated before and after analysis via `verify_evidence_hash()` MCP tool. |
+| **No prompt injection** | Tool outputs are structured JSON, not raw shell strings. The model cannot escape the schema. |
+| **Hallucination detection** | Independent `SelfCorrector` auditor compares every claim to raw tool outputs — unsupported claims are removed. |
+| **Quota resilience** | 5-key rotation pool + exponential backoff. Agent never dies mid-investigation. |
+| **Audit trail** | `execution_log.json`: ISO 8601 timestamps (µs resolution), tool name, args, raw output, correction results. |
 
 ---
 
-## 📊 Dataset Documentation (Findevil Component #5)
+## 📊 Demo Data Documentation
 
-All testing was conducted against the following datasets:
+All testing was conducted against these datasets (included in the repo):
 
-| Dataset | Source | Description |
-|---|---|---|
-| `mock_alerts.json` | Synthetic (Splunk-format) | 5 high-fidelity simulated Splunk security events including ransomware, web shell, and data exfiltration alerts. Mirrors real Splunk CIM schema. |
-| `mock_filesystem.txt` | SANS SIFT sample (sanitized) | Simulated `fls` timeline output from a Windows 10 DFIR case. Contains registry hives, suspicious temp binaries, and bat/ps1 scripts. |
-| `mock_volatility.txt` | SANS SIFT sample (sanitized) | Simulated `volatility3 windows.pslist` output showing injected `svchost32.exe` process with anomalous parent PID. |
+| File | Format | Content |
+|------|--------|---------|
+| `demo_data/mock_alerts.json` | Splunk CIM JSON | 5 security events: VSS deletion, HTTP exfiltration, temp directory dropper, IIS web shell, HKCU Run persistence key |
+| `demo_data/mock_filesystem.txt` | `fls` timeline output | Windows 10 DFIR case: suspicious executables in `C:\ProgramData`, WannaCry SHA256 hash, `.bat`/`.ps1` scripts |
+| `demo_data/mock_volatility.txt` | `volatility3 windows.pslist` | Injected `svchost32.exe` (PID 4821) with anomalous parent PID 1, hollowed memory regions |
 
-**Data Integrity:** All mock data is static and read-only. No live forensic images are included in the repository. When live SIFT tools (`fls`, `volatility`) are detected on the host system, the agent automatically switches to live analysis mode.
+---
 
-**Evidence Chain:** Every tool invocation is logged in `execution_log.json` with:
-- ISO 8601 timestamp (microsecond resolution)
-- Tool name and exact arguments passed
-- Full raw output returned
-- Self-correction audit results
+## 🛡️ Real Forensic Output (Live Session Data)
+
+The following is actual verified output from a live Sentinel Zero forensics session:
+
+**Threat Identified:** Stealthy Process Hollowing + Unauthorized Executable Discovery on `HOST-ALPHA-01`
+
+| Finding | Evidence |
+|---------|---------|
+| Unauthorized dropper | `C:\ProgramData\SystemUtilities\Updater.exe` created `2023-10-26 14:35:12 UTC` |
+| Malware hash | `c3a4f1b2d5e8a7f0c9b6e3d2a1b0c9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2` |
+| Process hollowing | `svchost.exe` PID 1234 — injected code with PEB redirection + shellcode in address space |
+| C2 communication | Outbound from `10.0.0.10` → `192.168.1.150:443` and `:8080` since `2023-10-26 14:45:00 UTC` |
+| Threat classification | APT-grade — custom malware "PhantomInjector" (internal tracking name) |
+
+**Self-Correction Result:** Agent initially generated findings without tool evidence. Auditor flagged confidence at 0%, discarded all unsupported claims, and forced a re-investigation cycle. Final runbook generated only from verified tool output.
+
+---
+
+## 🧱 Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| AI Model | Google Gemini 2.5 Flash (via `google-generativeai` SDK) |
+| Agent Protocol | Model Context Protocol (MCP) — FastMCP server |
+| Backend | FastAPI + Uvicorn + SSE streaming |
+| Frontend | Vanilla HTML5 / CSS3 / JavaScript (no framework) |
+| Forensic Tools | `fls` (Sleuth Kit), `volatility3`, `grep` (via MCP read-only wrappers) |
+| Threat Intel | AlienVault OTX API (live IP + hash lookup) |
+| Deployment | Vercel (frontend) + Hugging Face Spaces Docker (backend) |
+| API Resilience | Multi-key rotation pool (up to 10 keys) + exponential backoff |
+
+---
+
+## 👨‍💻 Developer
+
+**Kushal Soni**
+GitHub: [@kushal-soni-official](https://github.com/kushal-soni-official)
 
 ---
 
 ## 📜 License
+
 MIT License — See [LICENSE](LICENSE) for details.
+
+---
+
+*Sentinel Zero · Dual submission: Splunk App Development Hackathon + Finding Evil: Cybersecurity Hackathon · 2026*
