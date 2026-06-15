@@ -1,5 +1,6 @@
 import os
 import json
+import time
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
@@ -8,16 +9,87 @@ from core.self_correct import SelfCorrector
 
 load_dotenv()
 
+# ── Multi-Key Fallback Pool ─────────────────────────────────────────────────
+# Primary key from .env, plus hardcoded fallback keys.
+# The agent cycles through all available keys before giving up.
+def _build_key_pool():
+    pool = []
+    primary = os.getenv("GEMINI_API_KEY", "").strip()
+    if primary:
+        pool.append(primary)
+    # Fallback keys (add your own here if needed)
+    fallback_keys = [
+        os.getenv("GEMINI_API_KEY_2", "").strip(),
+        os.getenv("GEMINI_API_KEY_3", "").strip(),
+    ]
+    for k in fallback_keys:
+        if k and k not in pool:
+            pool.append(k)
+    return pool
+
+KEY_POOL = _build_key_pool()
+
+
 class SentinelZeroAgent:
     def __init__(self, mcp_client=None, mode="splunk"):
-        api_key = os.getenv("GEMINI_API_KEY")
-        self.client = genai.Client(api_key=api_key)
+        self._key_pool = list(KEY_POOL)  # local copy for rotation
+        self._key_index = 0
+        self.client = genai.Client(api_key=self._current_key())
         self.model_name = "gemini-2.5-flash"
         self.mcp_client = mcp_client
         self.logger = AgentLogger()
         self.corrector = SelfCorrector()
         self.mode = mode
         self.max_iterations = 5  # Safety cap for autonomous loop
+
+    def _current_key(self):
+        if not self._key_pool:
+            return ""
+        return self._key_pool[self._key_index % len(self._key_pool)]
+
+    def _rotate_key(self):
+        """Switch to the next API key in the pool."""
+        if len(self._key_pool) > 1:
+            self._key_index = (self._key_index + 1) % len(self._key_pool)
+            self.client = genai.Client(api_key=self._current_key())
+            self.logger.log(f"[KEY ROTATION] Switched to API key #{self._key_index + 1} of {len(self._key_pool)}.")
+
+    def _safe_generate(self, prompt, tools=None, iteration=1, max_retries=3):
+        """Generates content with automatic key rotation and exponential backoff on transient errors."""
+        RETRYABLE_CODES = ["503", "429", "UNAVAILABLE", "RESOURCE_EXHAUSTED", "quota"]
+        for attempt in range(max_retries * len(self._key_pool)):
+            try:
+                if tools:
+                    response = self.client.models.generate_content(
+                        model=self.model_name,
+                        contents=prompt,
+                        config=types.GenerateContentConfig(tools=tools)
+                    )
+                else:
+                    response = self.client.models.generate_content(
+                        model=self.model_name,
+                        contents=prompt
+                    )
+                return response  # Success
+            except Exception as api_err:
+                err_str = str(api_err)
+                is_retryable = any(code in err_str for code in RETRYABLE_CODES)
+                if is_retryable:
+                    # Try the next key first
+                    old_key_idx = self._key_index
+                    self._rotate_key()
+                    if self._key_index == old_key_idx:
+                        # No more keys — wait before retrying same key
+                        wait_time = 2 ** (attempt + 1)
+                        self.logger.log(f"[RETRY] API overloaded (attempt {attempt+1}/{max_retries}). Waiting {wait_time}s before retry...")
+                        time.sleep(min(wait_time, 30))
+                    else:
+                        self.logger.log(f"[KEY ROTATION] Retryable error on iteration {iteration}: {err_str[:120]}")
+                else:
+                    self.logger.log(f"[API ERROR] Non-retryable error on iteration {iteration}: {err_str}")
+                    return None
+        self.logger.log(f"[API ERROR] All retries exhausted on iteration {iteration}. Proceeding with cached findings.")
+        return None
 
     def analyze(self, task, context_data):
         self.logger.start_session(task)
@@ -40,22 +112,10 @@ class SentinelZeroAgent:
             if self.mcp_client:
                 gemini_tools = self.mcp_client.get_gemini_tools()
 
-            # Execute Gemini analysis (new google.genai SDK)
-            response = None
-            try:
-                if gemini_tools:
-                    response = self.client.models.generate_content(
-                        model=self.model_name,
-                        contents=prompt,
-                        config=types.GenerateContentConfig(tools=gemini_tools)
-                    )
-                else:
-                    response = self.client.models.generate_content(
-                        model=self.model_name,
-                        contents=prompt
-                    )
-            except Exception as api_err:
-                self.logger.log(f"[API ERROR] Gemini API call failed on iteration {iteration}: {api_err}")
+            # Execute Gemini analysis — uses multi-key fallback + retry
+            response = self._safe_generate(prompt, tools=gemini_tools if gemini_tools else None, iteration=iteration)
+            if response is None:
+                self.logger.log(f"[SKIPPING] Iteration {iteration} skipped — API unavailable. Using prior findings.")
                 break
 
             if response is None:
@@ -210,11 +270,10 @@ Include the following sections in your Runbook:
 3. Step-by-Step Remediation Plan (Containment, Eradication, Recovery)
 4. Lessons Learned & Hardening Recommendations
 """
-        try:
-            response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=prompt
-            )
-            return response.text
-        except Exception as e:
-            return f"# Incident Response Runbook\n\nFailed to generate Runbook: {str(e)}"
+        response = self._safe_generate(prompt)
+        if response:
+            try:
+                return response.text
+            except (ValueError, AttributeError):
+                return "# Incident Response Runbook\n\nRunbook generation completed but response could not be read."
+        return "# Incident Response Runbook\n\nRunbook generation failed — API was unavailable after all retries."

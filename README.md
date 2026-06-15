@@ -1,5 +1,5 @@
 # Sentinel Zero — Autonomous Security Triage & Forensic Agent
-### Made during Splunk Agentic Ops Hackathon &amp; SANS FIND EVIL! Hackathon Submission
+### Dual Hackathon Submission: [Splunk App Development Hackathon](https://splunk.devpost.com/) &amp; [Finding Evil: Cybersecurity Hackathon](https://findevil.devpost.com/)
 
 [![GitHub Repo](https://img.shields.io/badge/GitHub-sentinel--zero-blue?logo=github)](https://github.com/kushal-soni-official/sentinel-zero)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)

@@ -10,31 +10,28 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Main Style Sheet -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
-    <!-- Background Canvas for 3D Scroll-Driven Scrollytelling Particle Grid -->
+    <!-- Background Canvas — scroll-driven frame sequencer -->
     <canvas id="bg-canvas"></canvas>
-    
-    <!-- Video Player Placeholder (Hidden until video is supplied) -->
-    <video id="bg-video" src="bg_scroll.mp4" muted playsinline style="display:none;"></video>
 
-    <!-- Scroll Track Spacer (Provides native scroll depth) -->
+    <!-- Scroll Track Spacer (Provides native scroll depth for scrollytelling) -->
     <div class="scroll-spacer"></div>
 
     <!-- Fixed Viewport Container -->
     <div class="app-viewport">
-        <!-- Header -->
+        <!-- Header (pointer-events restored via CSS) -->
         <header class="app-header">
             <div class="logo-area">
                 <img src="logo.png" alt="Sentinel Zero Logo" class="logo-img">
                 <div class="logo-text">
                     <h1>SENTINEL ZERO</h1>
-                    <span class="logo-sub">Autonomous AI Incident Responder & Forensic Agent</span>
+                    <span class="logo-sub">Autonomous AI Incident Responder &amp; Forensic Agent</span>
                 </div>
             </div>
             <div class="system-status">
@@ -48,14 +45,22 @@
 
         <!-- Dynamic Content Sections (Scrollytelling Cards) -->
         <div class="scrolly-container">
-            
-            <!-- SECTION 1: INTRO / OVERVIEW (Scroll: 0% - 20%) -->
+
+            <!-- SECTION 1: INTRO / OVERVIEW (Scroll: 0% - 16%) -->
             <section class="scroll-section visible" id="sec-intro">
                 <div class="intro-card glass-panel" data-title="Overview" data-icon="fa-solid fa-shield-halved">
-                    <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-compress"></i></button>
-                    <div class="badge-accent">AI SECURITY CO-PILOT</div>
-                    <h2>Autonomous Threat Hunting at Machine Speed</h2>
-                    <p>Sentinel Zero triages alerts, extracts evidence timelines, self-corrects hallucinations, and drafts incident containment plans—all in seconds.</p>
+                    <div class="card-header">
+                        <div class="badge-accent">AI SECURITY CO-PILOT</div>
+                        <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-minus"></i></button>
+                    </div>
+                    <h2>Autonomous Threat Hunting<br><span class="gradient-text">at Machine Speed</span></h2>
+                    <p class="intro-tagline">Sentinel Zero triages Splunk alerts, extracts evidence timelines, self-corrects hallucinations, and drafts incident containment plans — all in seconds.</p>
+                    <div class="intro-stats">
+                        <div class="stat-pill"><i class="fa-solid fa-bolt"></i> Sub-second triage</div>
+                        <div class="stat-pill"><i class="fa-solid fa-brain"></i> Self-correcting AI</div>
+                        <div class="stat-pill"><i class="fa-solid fa-magnifying-glass-chart"></i> SANS SIFT Forensics</div>
+                        <div class="stat-pill"><i class="fa-solid fa-plug"></i> MCP Protocol</div>
+                    </div>
                     <div class="scroll-hint">
                         <span>SCROLL DOWN TO INITIALIZE INVESTIGATION</span>
                         <i class="fa-solid fa-chevron-down bounce"></i>
@@ -63,15 +68,17 @@
                 </div>
             </section>
 
-            <!-- SECTION 2: SPLUNK TRIAGE SYSTEM (Scroll: 20% - 50%) -->
+            <!-- SECTION 2: SPLUNK TRIAGE SYSTEM (Scroll: 16% - 45%) -->
             <section class="scroll-section" id="sec-splunk">
                 <div class="scrolly-split">
                     <!-- Left: Alerts List -->
                     <div class="panel-card glass-panel" data-title="Live Splunk Alerts" data-icon="fa-solid fa-bell">
-                        <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-compress"></i></button>
-                        <h3><i class="fa-solid fa-bell"></i> Live Splunk Security Alerts</h3>
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-bell"></i> Live Splunk Security Alerts</h3>
+                            <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-minus"></i></button>
+                        </div>
                         <p class="panel-desc">Select an alert payload from the indexed SIEM events to run triage.</p>
-                        
+
                         <div class="alerts-list" id="splunk-alerts-container">
                             <div class="loading-state">
                                 <i class="fa-solid fa-spinner fa-spin"></i> Fetching Splunk indices...
@@ -85,10 +92,12 @@
 
                     <!-- Right: Mindstream Console -->
                     <div class="console-card glass-panel" data-title="Agent Mindstream" data-icon="fa-solid fa-terminal">
-                        <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-compress"></i></button>
                         <div class="card-header">
                             <h3><i class="fa-solid fa-terminal"></i> Sentinel Agent Mindstream</h3>
-                            <span class="console-badge" id="iteration-badge-splunk">Idle</span>
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <span class="console-badge" id="iteration-badge-splunk">Idle</span>
+                                <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-minus"></i></button>
+                            </div>
                         </div>
                         <div class="console-output" id="console-stream-splunk">
                             <div class="console-placeholder">
@@ -100,15 +109,17 @@
                 </div>
             </section>
 
-            <!-- SECTION 3: SIFT FORENSIC STUDIO (Scroll: 50% - 80%) -->
+            <!-- SECTION 3: SIFT FORENSIC STUDIO (Scroll: 45% - 73%) -->
             <section class="scroll-section" id="sec-sift">
                 <div class="scrolly-split">
                     <!-- Left: Forensic Assets -->
                     <div class="panel-card glass-panel" data-title="Forensic Targets" data-icon="fa-solid fa-folder-open">
-                        <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-compress"></i></button>
-                        <h3><i class="fa-solid fa-folder-open"></i> Forensic Evidence Targets</h3>
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-folder-open"></i> Forensic Evidence Targets</h3>
+                            <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-minus"></i></button>
+                        </div>
                         <p class="panel-desc">SIFT targets loaded into memory. Exposes safe read-only MCP commands.</p>
-                        
+
                         <div class="forensics-targets">
                             <div class="target-row active">
                                 <div class="target-icon"><i class="fa-solid fa-compact-disc"></i></div>
@@ -142,10 +153,12 @@
 
                     <!-- Right: Mindstream Console -->
                     <div class="console-card glass-panel" data-title="SIFT Mindstream" data-icon="fa-solid fa-terminal">
-                        <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-compress"></i></button>
                         <div class="card-header">
                             <h3><i class="fa-solid fa-terminal"></i> SIFT Agent Mindstream</h3>
-                            <span class="console-badge" id="iteration-badge-sift">Idle</span>
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <span class="console-badge" id="iteration-badge-sift">Idle</span>
+                                <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-minus"></i></button>
+                            </div>
                         </div>
                         <div class="console-output" id="console-stream-sift">
                             <div class="console-placeholder">
@@ -157,20 +170,22 @@
                 </div>
             </section>
 
-            <!-- SECTION 4: DIAGNOSTIC & CONTAINMENT VAULT (Scroll: 80% - 100%) -->
+            <!-- SECTION 4: DIAGNOSTIC & CONTAINMENT VAULT (Scroll: 73% - 88%) -->
             <section class="scroll-section" id="sec-runbook">
                 <div class="scrolly-split">
                     <!-- Left: Auditor -->
                     <div class="panel-card glass-panel" style="flex: 0.8;" data-title="Inspector" data-icon="fa-solid fa-triangle-exclamation">
-                        <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-compress"></i></button>
                         <div class="card-header border-yellow">
                             <h3 class="color-yellow"><i class="fa-solid fa-triangle-exclamation"></i> Self-Correction Inspector</h3>
-                            <span class="status-tag warning" id="confidence-badge">Confidence: --%</span>
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <span class="status-tag warning" id="confidence-badge">Confidence: --%</span>
+                                <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-minus"></i></button>
+                            </div>
                         </div>
-                        <div class="correction-body" style="height: calc(100% - 50px); display: flex; flex-direction: column; gap: 12px; margin-top: 12px;">
+                        <div class="correction-body" style="height: calc(100% - 50px); display: flex; flex-direction: column; gap: 12px; margin-top: 12px; overflow-y: auto;">
                             <div class="col-lbl">Detected Hallucinations / Logic Flaws:</div>
                             <div class="col-content text-danger" id="hallucination-reason" style="flex: 1;">No inconsistencies flagged.</div>
-                            
+
                             <div class="col-lbl">Corrected Findings Applied:</div>
                             <div class="col-content text-success" id="corrected-findings" style="flex: 2; overflow-y: auto;">Verified findings are clean.</div>
                         </div>
@@ -178,10 +193,12 @@
 
                     <!-- Right: Generated Runbook -->
                     <div class="runbook-card glass-panel" data-title="Runbook" data-icon="fa-solid fa-file-contract">
-                        <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-compress"></i></button>
                         <div class="card-header border-green">
                             <h3 class="color-green"><i class="fa-solid fa-file-contract"></i> Incident Response Runbook</h3>
-                            <button class="btn btn-small" id="btn-copy-runbook"><i class="fa-regular fa-copy"></i> Copy Markdown</button>
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <button class="btn btn-small" id="btn-copy-runbook"><i class="fa-regular fa-copy"></i> Copy Markdown</button>
+                                <button class="btn-minimize" title="Minimize Panel"><i class="fa-solid fa-minus"></i></button>
+                            </div>
                         </div>
                         <div class="runbook-body markdown-body" id="runbook-content">
                             <div class="loading-state">
@@ -192,13 +209,117 @@
                 </div>
             </section>
 
+            <!-- SECTION 5: PROJECT SHOWCASE / ABOUT (Scroll: 88% - 100%) -->
+            <section class="scroll-section" id="sec-about">
+                <div class="about-layout">
+                    <!-- Left: Project Tech Details for Judges -->
+                    <div class="about-card glass-panel about-tech">
+                        <div class="about-card-header">
+                            <div class="about-icon-wrap"><i class="fa-solid fa-trophy"></i></div>
+                            <div>
+                                <div class="about-label">UNIFIED ARCHITECTURE SUBMISSION</div>
+                                <h3 class="about-title">Dual Hackathon Project</h3>
+                                <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 8px; line-height: 1.5;">A single, comprehensively engineered project serving as a submission for both <strong>Splunk FinDevil 2026</strong> and the <strong>Google Cloud AI</strong> hackathons.</div>
+                            </div>
+                        </div>
+
+                        <div class="tech-section">
+                            <div class="tech-section-label"><i class="fa-solid fa-microchip"></i> Core Architecture</div>
+                            <div class="tech-grid">
+                                <div class="tech-pill primary">
+                                    <i class="fa-solid fa-robot"></i>
+                                    <span>Gemini 2.5 Flash</span>
+                                </div>
+                                <div class="tech-pill primary">
+                                    <i class="fa-solid fa-plug-circle-bolt"></i>
+                                    <span>Model Context Protocol</span>
+                                </div>
+                                <div class="tech-pill primary">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    <span>SANS SIFT Forensics</span>
+                                </div>
+                                <div class="tech-pill primary">
+                                    <i class="fa-solid fa-chart-bar"></i>
+                                    <span>Splunk SIEM Integration</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tech-section">
+                            <div class="tech-section-label"><i class="fa-solid fa-layer-group"></i> Stack</div>
+                            <div class="tech-grid">
+                                <div class="tech-pill secondary"><i class="fa-brands fa-python"></i> FastAPI + Python</div>
+                                <div class="tech-pill secondary"><i class="fa-solid fa-server"></i> FastMCP Server</div>
+                                <div class="tech-pill secondary"><i class="fa-solid fa-code"></i> Vanilla JS / HTML5</div>
+                                <div class="tech-pill secondary"><i class="fa-solid fa-cloud"></i> Vercel + HF Spaces</div>
+                            </div>
+                        </div>
+
+                        <div class="tech-section">
+                            <div class="tech-section-label"><i class="fa-solid fa-star"></i> Key Innovations</div>
+                            <div class="feature-list">
+                                <div class="feature-item">
+                                    <i class="fa-solid fa-check-circle feature-icon"></i>
+                                    <span>Autonomous multi-iteration AI agent loop with self-correction</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fa-solid fa-check-circle feature-icon"></i>
+                                    <span>Real-time SSE streaming of agent reasoning to UI</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fa-solid fa-check-circle feature-icon"></i>
+                                    <span>Hallucination detection engine with confidence scoring</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fa-solid fa-check-circle feature-icon"></i>
+                                    <span>MCP-powered safe read-only forensic toolchain</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fa-solid fa-check-circle feature-icon"></i>
+                                    <span>AI-generated IR Runbook with MITRE ATT&CK mapping</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fa-solid fa-check-circle feature-icon"></i>
+                                    <span>Multi-key API fallback with exponential backoff</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Developer Card + Final Message -->
+                    <div class="about-right-col">
+                        <div class="about-card glass-panel about-dev">
+                            <div class="dev-avatar-ring">
+                                <div class="dev-avatar">
+                                    <i class="fa-solid fa-user-astronaut"></i>
+                                </div>
+                            </div>
+                            <div class="dev-role">DEVELOPER</div>
+                            <div class="dev-name">Kushal Soni</div>
+                            <a class="dev-github" href="https://github.com/kushal-soni-official" target="_blank" rel="noopener">
+                                <i class="fa-brands fa-github"></i>
+                                <span>kushal-soni-official</span>
+                                <i class="fa-solid fa-arrow-up-right-from-square dev-link-icon"></i>
+                            </a>
+                        </div>
+
+                        <div class="about-card glass-panel about-mission">
+                            <div class="mission-icon"><i class="fa-solid fa-lightbulb"></i></div>
+                            <div class="mission-title">A Step Forward in Autonomous Security</div>
+                            <p class="mission-body">Sentinel Zero demonstrates a practical, production-ready approach to autonomous incident triage. By combining verifiable reasoning with robust safeguards against AI hallucinations, it aims to augment security teams and accelerate response times securely.</p>
+                            <div class="mission-tagline">Thank you to the judges and organizers for the opportunity.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
         </div>
     </div>
-    
-    <!-- Dock System -->
+
+    <!-- Dock System — minimized panels appear here -->
     <div id="app-dock" class="app-dock"></div>
 
     <!-- Main Application Script -->
-    <script src="app.js"></script>
+    <script src="app.js?v=5"></script>
 </body>
 </html>

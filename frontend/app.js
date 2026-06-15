@@ -44,168 +44,152 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCopyRunbook = document.getElementById('btn-copy-runbook');
     const forensicTask = document.getElementById('forensic-task');
 
-    // Canvas Background Particle Grid & Frame Scrubber
+    // ─── CANVAS BACKGROUND — Scroll-Driven Frame Sequencer ──────────────────
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
-    let particles = [];
-    const numParticles = 200;
-    const perspective = 400;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
     let width = window.innerWidth;
     let height = window.innerHeight;
 
-    // Frame Sequence Preloading
-    const totalFrames = 300;
-    const frames = [];
-    let loadedFramesCount = 0;
-    let framesLoaded = false;
+    const TOTAL_FRAMES = 300;
+    // Sparse array indexed 0–299, null = not yet loaded
+    const frames = new Array(TOTAL_FRAMES).fill(null);
+    let loadedCount = 0;
+    let lastDrawnIndex = -1;  // last frame index successfully painted
+    let lastDrawnImg = null;  // the actual image, kept as stable fallback
 
-    function preloadFrames() {
-        for (let i = 1; i <= totalFrames; i++) {
-            const img = new Image();
-            const frameNum = String(i).padStart(3, '0');
-            img.src = `/frames/frame_${frameNum}.jpg`;
-            img.onload = () => {
-                loadedFramesCount++;
-                if (loadedFramesCount === totalFrames) {
-                    framesLoaded = true;
-                    console.log("All 300 frames preloaded successfully.");
-                }
-            };
-            img.onerror = () => {
-                // Fallback will naturally occur if frames fail to load
-            };
-            frames.push(img);
-        }
+    // ── Safe Sequential Loading ─────────────────────────────────────
+    // Load the first few frames instantly, then trickle the rest to prevent browser network queue collapse.
+    function loadFrame(i) {
+        if (i >= TOTAL_FRAMES) return;
+        const img = new Image();
+        const frameNum = String(i + 1).padStart(3, '0');
+        img.src = `frames/frame_${frameNum}.jpg`;
+        img.onload = () => {
+            frames[i] = img;
+            loadedCount++;
+            // Load next frame after this one succeeds
+            loadFrame(i + 1);
+        };
+        img.onerror = () => {
+            loadedCount++;
+            // Continue loading even if one fails
+            loadFrame(i + 1);
+        };
     }
-    preloadFrames();
+    
+    // Kick off the first 5 frames in parallel to guarantee immediate render,
+    // then they will sequentially chain the rest.
+    for (let start = 0; start < 5; start++) {
+        loadFrame(start * 60); // stagger across the 300 frames: 0, 60, 120, 180, 240
+    }
 
-    // Video Background Auto-Detector & Scrubber (Fallback)
-    const video = document.getElementById('bg-video');
-    let useVideo = false;
-
-    video.addEventListener('loadedmetadata', () => {
-        if (!framesLoaded) {
-            useVideo = true;
-            canvas.style.display = 'none';
-            video.style.display = 'block';
-            video.style.position = 'fixed';
-            video.style.top = '0';
-            video.style.left = '0';
-            video.style.width = '100vw';
-            video.style.height = '100vh';
-            video.style.objectFit = 'cover';
-            video.style.zIndex = '-2';
-            console.log("Sentinel Background Video (bg_scroll.mp4) detected. Canvas fallback disabled.");
-        }
-    });
-
-    let lastFrameIndex = -1;
-    let windowResized = true;
-
-    // Resize Canvas
+    // ── Canvas resize ────────────────────────────────────────────────────────
     function resizeCanvas() {
         width = window.innerWidth;
         height = window.innerHeight;
         canvas.width = width;
         canvas.height = height;
-        windowResized = true;
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
     }
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    // Particle system removed to prevent visual clutter and lag
+    // ── Helpers ───────────────────────────────────────────────────────────────
+    function scrollPercentToIndex(pct) {
+        return Math.max(0, Math.min(TOTAL_FRAMES - 1, Math.floor(pct * TOTAL_FRAMES)));
+    }
 
-    // Draw frame as background-size: cover
-    function drawCoverImage(img) {
-        if (!img || img.naturalWidth === 0) return false;
-        const imgRatio = img.naturalWidth / img.naturalHeight;
-        const canvasRatio = canvas.width / canvas.height;
-        let drawWidth, drawHeight, x, y;
+    function isReady(img) {
+        return img && img.complete && img.naturalWidth > 0;
+    }
 
-        if (canvasRatio > imgRatio) {
-            drawWidth = canvas.width;
-            drawHeight = canvas.width / imgRatio;
-            x = 0;
-            y = (canvas.height - drawHeight) / 2;
-        } else {
-            drawWidth = canvas.height * imgRatio;
-            drawHeight = canvas.height;
-            x = (canvas.width - drawWidth) / 2;
-            y = 0;
+    // Find the best available frame at or near `index`
+    function findNearestFrame(index) {
+        if (isReady(frames[index])) return frames[index];
+        // Search outward up to 30 frames for the nearest loaded one
+        for (let d = 1; d <= 30; d++) {
+            const lo = frames[Math.max(0, index - d)];
+            const hi = frames[Math.min(TOTAL_FRAMES - 1, index + d)];
+            if (isReady(lo)) return lo;
+            if (isReady(hi)) return hi;
         }
+        return lastDrawnImg; // Absolute fallback: whatever we painted last
+    }
 
-        ctx.drawImage(img, x, y, drawWidth, drawHeight);
+    // Cover-fill the canvas with img
+    function drawCover(img) {
+        if (!isReady(img)) return false;
+        const ir = img.naturalWidth / img.naturalHeight;
+        const cr = width / height;
+        let dw, dh, dx, dy;
+        if (cr > ir) { dw = width;        dh = width / ir;  dx = 0;            dy = (height - dh) / 2; }
+        else          { dw = height * ir;  dh = height;      dx = (width - dw) / 2; dy = 0; }
+        ctx.drawImage(img, dx, dy, dw, dh);
         return true;
     }
 
-    // Render 3D Scrollytelling Canvas
-    function drawCanvas() {
-        let frameDrawn = false;
-        if (loadedFramesCount > 0) {
-            const frameIndex = Math.min(totalFrames - 1, Math.floor(scrollPercent * totalFrames));
-            if (frameIndex !== lastFrameIndex || windowResized) {
-                const frameImg = frames[frameIndex];
-                if (frameImg && frameImg.complete) {
-                    ctx.clearRect(0, 0, width, height);
-                    frameDrawn = drawCoverImage(frameImg);
-                    if (frameDrawn) {
-                        lastFrameIndex = frameIndex;
-                        windowResized = false;
-                    }
-                }
-            } else {
-                frameDrawn = true; // We already have the correct frame painted
-            }
-        }
+    // ── rAF render loop — Guaranteed Continuous Paint ─────────────────
+    function renderLoop() {
+        const idx = scrollPercentToIndex(scrollPercent);
+        const targetImg = findNearestFrame(idx);
 
-        // Fallback removed. Just wait for frames to load.
-        if (!frameDrawn && totalFrames > 0 && loadedFramesCount < 10) {
+        if (targetImg) {
+            ctx.clearRect(0, 0, width, height);
+            drawCover(targetImg);
+            lastDrawnIndex = idx;
+            lastDrawnImg = targetImg;
+        } else {
+            // No frames at all yet — paint dark background once
             ctx.fillStyle = '#07090e';
             ctx.fillRect(0, 0, width, height);
-            ctx.fillStyle = '#06b6d4';
-            ctx.font = '20px monospace';
-            ctx.textAlign = 'center';
-            ctx.fillText('INITIALIZING SYSTEM...', width / 2, height / 2);
         }
-        requestAnimationFrame(drawCanvas);
-    }
-    requestAnimationFrame(drawCanvas);
 
-    // Scrollytelling Section Triggers on Scroll
+        requestAnimationFrame(renderLoop);
+    }
+    requestAnimationFrame(renderLoop);
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // Scrollytelling Section Triggers + Frame Scrub on Scroll
     window.addEventListener('scroll', () => {
         const scrollTop = window.scrollY;
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
         scrollPercent = docHeight > 0 ? scrollTop / docHeight : 0;
 
-        // Scrub video if active
-        if (useVideo && video.duration) {
-            video.currentTime = scrollPercent * video.duration;
-        }
-
         // Toggle sections based on scroll percent
-        if (scrollPercent < 0.20) {
+        if (scrollPercent < 0.16) {
             revealSection('intro');
             updateHeaderMode('SPLUNK MODE', 'splunk');
-        } else if (scrollPercent >= 0.20 && scrollPercent < 0.50) {
+        } else if (scrollPercent >= 0.16 && scrollPercent < 0.45) {
             revealSection('splunk');
             updateHeaderMode('SPLUNK MODE', 'splunk');
             currentMode = 'splunk';
-        } else if (scrollPercent >= 0.50 && scrollPercent < 0.80) {
+        } else if (scrollPercent >= 0.45 && scrollPercent < 0.73) {
             revealSection('sift');
             updateHeaderMode('SIFT FORENSICS MODE', 'sift');
             currentMode = 'sift';
-        } else {
+        } else if (scrollPercent >= 0.73 && scrollPercent < 0.88) {
             revealSection('runbook');
             updateHeaderMode('CONTAINMENT VAULT', 'sift');
+        } else {
+            revealSection('about');
+            updateHeaderMode('PROJECT SHOWCASE', 'splunk');
         }
     });
 
+
     function revealSection(activeKey) {
-        Object.keys(sections).forEach(key => {
+        const allKeys = ['intro', 'splunk', 'sift', 'runbook', 'about'];
+        allKeys.forEach(key => {
+            const el = document.getElementById(`sec-${key}`);
+            if (!el) return;
             if (key === activeKey) {
-                sections[key].classList.add('visible');
+                el.classList.add('visible');
             } else {
-                sections[key].classList.remove('visible');
+                el.classList.remove('visible');
             }
         });
     }
@@ -302,6 +286,38 @@ document.addEventListener('DOMContentLoaded', () => {
         row.addEventListener('click', () => {
             document.querySelectorAll('.target-row').forEach(r => r.classList.remove('active'));
             row.classList.add('active');
+        });
+    });
+
+    // ── Minimize Card Logic ─────────────────────────────────────────────────
+    document.querySelectorAll('.btn-minimize').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            console.log("MINIMIZE CLICK LISTENER FIRED!", e.target);
+            const card = e.target.closest('.glass-panel');
+            if (!card) {
+                console.log("NO CARD FOUND!");
+                return;
+            }
+            console.log("CARD FOUND:", card.className);
+            
+            card.classList.add('minimized-card');
+            
+            const title = card.getAttribute('data-title') || 'Panel';
+            const iconClass = card.getAttribute('data-icon') || 'fa-solid fa-window-restore';
+            
+            const orb = document.createElement('div');
+            orb.className = 'dock-orb';
+            orb.innerHTML = `
+                <i class="${iconClass}"></i>
+                <span class="dock-label">${title}</span>
+            `;
+            
+            orb.addEventListener('click', () => {
+                card.classList.remove('minimized-card');
+                orb.remove();
+            });
+            
+            appDock.appendChild(orb);
         });
     });
 
@@ -502,8 +518,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Helper: smooth-scroll to a scrollytelling section
     function scrollToSection(key) {
-        const targets = { intro: 0.05, splunk: 0.33, sift: 0.63, runbook: 0.90 };
-        const pct = targets[key] ?? 0.33;
+        const targets = { intro: 0.05, splunk: 0.28, sift: 0.58, runbook: 0.80, about: 0.93 };
+        const pct = targets[key] ?? 0.28;
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
         window.scrollTo({ top: pct * docHeight, behavior: 'smooth' });
     }
@@ -555,32 +571,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Dock System Logic ---
-    const appDock = document.getElementById('app-dock');
+    // NOTE: appDock is already declared above (line ~28). Do NOT re-declare with const.
     const minimizeButtons = document.querySelectorAll('.btn-minimize');
 
     minimizeButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
+            e.stopPropagation();
             const panel = e.target.closest('.glass-panel');
             if (!panel) return;
-            
+
             const title = panel.getAttribute('data-title') || 'Panel';
             const iconClass = panel.getAttribute('data-icon') || 'fa-solid fa-window-restore';
-            
-            // Minimize panel
+
+            // Minimize panel with animation
             panel.classList.add('minimized-card');
-            
+
             // Create dock orb
             const orb = document.createElement('div');
             orb.className = 'dock-orb';
             orb.title = `Restore: ${title}`;
-            orb.innerHTML = `<i class="${iconClass}"></i>`;
-            
+            orb.setAttribute('data-tooltip', title);
+            orb.innerHTML = `<i class="${iconClass}"></i><span class="dock-label">${title}</span>`;
+
             // Restore event
             orb.addEventListener('click', () => {
                 orb.remove();
                 panel.classList.remove('minimized-card');
             });
-            
+
             appDock.appendChild(orb);
         });
     });
