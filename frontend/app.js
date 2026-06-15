@@ -292,6 +292,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── Minimize Card Logic ─────────────────────────────────────────────────
     document.querySelectorAll('.btn-minimize').forEach(btn => {
         btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
             console.log("MINIMIZE CLICK LISTENER FIRED!", e.target);
             const card = e.target.closest('.glass-panel');
             if (!card) {
@@ -300,6 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             console.log("CARD FOUND:", card.className);
             
+            if (card.classList.contains('minimized-card')) return;
             card.classList.add('minimized-card');
             
             const title = card.getAttribute('data-title') || 'Panel';
