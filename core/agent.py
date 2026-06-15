@@ -270,10 +270,14 @@ Include the following sections in your Runbook:
 3. Step-by-Step Remediation Plan (Containment, Eradication, Recovery)
 4. Lessons Learned & Hardening Recommendations
 """
-        response = self._safe_generate(prompt)
-        if response:
-            try:
-                return response.text
-            except (ValueError, AttributeError):
-                return "# Incident Response Runbook\n\nRunbook generation completed but response could not be read."
-        return "# Incident Response Runbook\n\nRunbook generation failed — API was unavailable after all retries."
+        try:
+            response = self._safe_generate(prompt)
+            if response:
+                try:
+                    return response.text
+                except (ValueError, AttributeError):
+                    return "# Incident Response Runbook\n\nRunbook generation completed but response could not be read."
+            return "# Incident Response Runbook\n\nRunbook generation failed — API was unavailable after all retries."
+        except Exception as e:
+            err_msg = str(e)[:250]
+            return f"# Incident Response Runbook\n\n**API Quota Exhausted.**\n\nFailed to generate Runbook: {err_msg}..."

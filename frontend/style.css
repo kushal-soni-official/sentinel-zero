@@ -936,6 +936,9 @@ h3 {
     min-height: 80px;
     white-space: pre-wrap;
     font-family: var(--font-mono);
+    overflow-y: auto;
+    overflow-x: hidden;
+    word-break: break-word;
 }
 
 .text-danger { color: #fca5a5; border-color: rgba(239, 104, 104, 0.2); }
