@@ -13,13 +13,13 @@ def _build_key_pool():
     primary = os.getenv("GEMINI_API_KEY", "").strip()
     if primary:
         pool.append(primary)
-    fallback_keys = [
-        os.getenv("GEMINI_API_KEY_2", "").strip(),
-        os.getenv("GEMINI_API_KEY_3", "").strip(),
-    ]
-    for k in fallback_keys:
+    
+    # Dynamically load GEMINI_API_KEY_2 to GEMINI_API_KEY_10
+    for i in range(2, 11):
+        k = os.getenv(f"GEMINI_API_KEY_{i}", "").strip()
         if k and k not in pool:
             pool.append(k)
+            
     return pool
 
 KEY_POOL = _build_key_pool()
