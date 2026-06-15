@@ -1,3 +1,12 @@
+---
+title: Sentinel Zero
+emoji: 🛡️
+colorFrom: cyan
+colorTo: blue
+sdk: docker
+pinned: true
+---
+
 # 🛡️ Sentinel Zero — Autonomous Security Triage & Forensic Agent
 
 <p align="center">
