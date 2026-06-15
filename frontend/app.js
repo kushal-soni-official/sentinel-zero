@@ -303,6 +303,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("CARD FOUND:", card.className);
             
             if (card.classList.contains('minimized-card')) return;
+            if (card.dataset.hasOrb) return;
+            card.dataset.hasOrb = "true";
             card.classList.add('minimized-card');
             
             const title = card.getAttribute('data-title') || 'Panel';
@@ -317,6 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             orb.addEventListener('click', () => {
                 card.classList.remove('minimized-card');
+                delete card.dataset.hasOrb;
                 orb.remove();
             });
             
