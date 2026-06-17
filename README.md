@@ -34,6 +34,7 @@
 | **Vercel** | [sentinel-zero.vercel.app](https://sentinel-zero.vercel.app/) | Frontend glassmorphic UI (60fps, instant load) |
 | **Hugging Face Spaces** | [huggingface.co/spaces/ofc01/sentinel-zero](https://huggingface.co/spaces/ofc01/sentinel-zero) | FastAPI backend + Gemini agent + MCP tools |
 | **GitHub** | [kushal-soni-official/sentinel-zero](https://github.com/kushal-soni-official/sentinel-zero) | Full source code, MIT License |
+| **YouTube** | [kushal-soni-official/sentinel-zero](https://youtu.be/mgj3vxm6e14?si=qRVBnuIZXObWCBKR) | Project Demo, Video Presentation |
 
 > **Architecture note:** The Vercel frontend automatically detects the environment. On Vercel, all `/api/` calls route to the Hugging Face backend, bypassing Vercel's 10-second serverless timeout entirely for long-running AI investigations.
 
